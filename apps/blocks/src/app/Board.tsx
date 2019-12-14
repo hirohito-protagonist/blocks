@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, createRef} from 'react';
 
 export default function Board() {
 
@@ -6,9 +6,13 @@ export default function Board() {
     const ROWS = 20;
     const BLOCK_SIZE = 30;
     const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-    let canvasCntext = React.createRef();
+    let canvasCntext = createRef();
 
-    React.useEffect(() => {
+    const handlePlay = () => {
+        console.log(canvasCntext.current);
+    };
+    
+    useEffect(() => {
         const canvas: HTMLCanvasElement = canvasCntext.current;
         const context: CanvasRenderingContext2D = canvas.getContext('2d');
         context.canvas.width = COLUMNS * BLOCK_SIZE;
@@ -16,17 +20,18 @@ export default function Board() {
         context.scale(BLOCK_SIZE, BLOCK_SIZE);
         grid.forEach((row: any[], y) => {
             row.forEach((value, x) => {
-                if (value > 0) {
+                // if (value > 0) {
                     context.fillStyle = 'green';
                     context.fillRect(x, y, 1, 1);
-                }
+                // }
             });
         });
     });
     
     return (
         <>
-            <canvas ref={canvasCntext}></canvas>
+            <canvas ref={canvasCntext} className="c-game-board"></canvas>
+            <button onClick={handlePlay}>Play</button>
         </>
     );
 };
