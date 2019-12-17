@@ -6,6 +6,17 @@ export default function Board() {
     const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
     let canvasCntext = createRef();
 
+    const addOutlines = (ctx: CanvasRenderingContext2D) => {
+        for (let i = 0; i < COLUMNS; i++) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
+        }
+        for (let i = 0; i < ROWS; i++) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, i, ctx.canvas.width, 0.025);
+        }
+    };
+
     const drawBoard = () => {
         const canvas: HTMLCanvasElement = canvasCntext.current;
         const context: CanvasRenderingContext2D = canvas.getContext('2d');
@@ -14,12 +25,13 @@ export default function Board() {
         context.scale(BLOCK_SIZE, BLOCK_SIZE);
         grid.forEach((row: any[], y) => {
             row.forEach((value, x) => {
-                // if (value > 0) {
+                if (value > 0) {
                     context.fillStyle = 'green';
                     context.fillRect(x, y, 1, 1);
-                // }
+                }
             });
         });
+        addOutlines(context);
     };
 
     const handlePlay = () => {
