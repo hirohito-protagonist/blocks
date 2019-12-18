@@ -1,10 +1,16 @@
 import React, {useEffect, createRef} from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE } from './constants';
+import { Piece, IPiece } from './piece';
 
 export default function Board() {
 
     const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
     let canvasCntext = createRef();
+
+    const getContext = (): CanvasRenderingContext2D =>  {
+        const canvas: HTMLCanvasElement = canvasCntext.current;
+        return canvas.getContext('2d');
+    };
 
     const addOutlines = (ctx: CanvasRenderingContext2D) => {
         for (let i = 0; i < COLUMNS; i++) {
@@ -18,8 +24,7 @@ export default function Board() {
     };
 
     const drawBoard = () => {
-        const canvas: HTMLCanvasElement = canvasCntext.current;
-        const context: CanvasRenderingContext2D = canvas.getContext('2d');
+        const context = getContext();
         context.canvas.width = COLUMNS * BLOCK_SIZE;
         context.canvas.height = ROWS * BLOCK_SIZE;
         context.scale(BLOCK_SIZE, BLOCK_SIZE);
@@ -28,19 +33,24 @@ export default function Board() {
                 if (value > 0) {
                     context.fillStyle = 'green';
                     context.fillRect(x, y, 1, 1);
-                }
+                }   
             });
         });
         addOutlines(context);
     };
 
     const handlePlay = () => {
-        console.log(canvasCntext.current);
+        const ctx = getContext();
+        const piece = new Piece(ctx);
         drawBoard();
+        piece.draw();
     };
     
     useEffect(() => {
+        const ctx = getContext();
+        const piece = new Piece(ctx);
         drawBoard();
+        piece.draw();
     });
     
     return (
