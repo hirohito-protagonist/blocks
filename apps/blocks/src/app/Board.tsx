@@ -23,33 +23,32 @@ export default function Board() {
         }
     };
 
-    const drawBoard = () => {
-        const context = getContext();
-        context.canvas.width = COLUMNS * BLOCK_SIZE;
-        context.canvas.height = ROWS * BLOCK_SIZE;
-        context.scale(BLOCK_SIZE, BLOCK_SIZE);
+    const drawBoard = (ctx: CanvasRenderingContext2D) => {
+        ctx.canvas.width = COLUMNS * BLOCK_SIZE;
+        ctx.canvas.height = ROWS * BLOCK_SIZE;
+        ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
         grid.forEach((row: any[], y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    context.fillStyle = 'green';
-                    context.fillRect(x, y, 1, 1);
+                    ctx.fillStyle = 'green';
+                    ctx.fillRect(x, y, 1, 1);
                 }   
             });
         });
-        addOutlines(context);
+        addOutlines(ctx);
     };
 
     const handlePlay = () => {
         const ctx = getContext();
         const piece = new Piece(ctx);
-        drawBoard();
+        drawBoard(ctx);
         piece.draw();
     };
     
     useEffect(() => {
         const ctx = getContext();
         const piece = new Piece(ctx);
-        drawBoard();
+        drawBoard(ctx);
         piece.draw();
     });
     
