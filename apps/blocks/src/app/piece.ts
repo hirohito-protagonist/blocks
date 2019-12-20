@@ -1,3 +1,4 @@
+import { SHAPES } from './constants';
 
 export interface IPiece {
     x: number;
@@ -18,10 +19,7 @@ export class Piece implements IPiece {
     }
 
     spawn() {
-        this.shape = [
-            [1, 1],
-            [1, 1]
-        ];
+        this.shape = SHAPES[1];
         this.color = 'red';
         this.x = 3;
         this.y = 0;
@@ -30,10 +28,12 @@ export class Piece implements IPiece {
     draw() {
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
-                this.ctx.fillStyle = 'red';
-                const currentX = this.x + x;
-                const currentY = this.y + y;
-                this.ctx.fillRect(currentX, currentY, 1, 1);
+                if (value > 0) {
+                    this.ctx.fillStyle = 'red';
+                    const currentX = this.x + x;
+                    const currentY = this.y + y;
+                    this.ctx.fillRect(currentX, currentY, 1, 1);
+                }
             });
         });
     }
