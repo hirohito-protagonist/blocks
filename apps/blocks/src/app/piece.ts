@@ -19,7 +19,7 @@ export class Piece implements IPiece {
     }
 
     spawn() {
-        this.shape = SHAPES[this.randomizeTetrominoType(6)];
+        this.shape = SHAPES[this.randomizeTetrominoType(7)];
         this.color = 'red';
         this.x = 3;
         this.y = 0;
@@ -36,6 +36,12 @@ export class Piece implements IPiece {
                 }
             });
         });
+    }
+
+    move(p: IPiece): void {
+        this.x = p.x;
+        this.y = p.y;
+        this.shape = p.shape;
     }
 
     private randomizeTetrominoType(noOfTypes: number): number {

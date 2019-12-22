@@ -1,10 +1,16 @@
-import React, {useEffect, createRef} from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE } from './constants';
+import React, {useEffect, createRef, useRef} from 'react';
+import { COLUMNS, ROWS, BLOCK_SIZE, KEY } from './constants';
 import { Piece, IPiece } from './piece';
 
 export default function Board() {
 
     const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+    const piece = useRef<Piece>();
+    const moves = {
+        [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
+        [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1}),
+        [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
+    };
     let canvasCntext = createRef();
 
     const getContext = (): CanvasRenderingContext2D =>  {
@@ -40,17 +46,39 @@ export default function Board() {
 
     const handlePlay = () => {
         const ctx = getContext();
-        const piece = new Piece(ctx);
+        const p = new Piece(ctx);
+        piece.current = p;
         drawBoard(ctx);
-        piece.draw();
+        p.draw();
+    };
+
+    const keyEvent = (event: KeyboardEvent) => {
+        
+        if (moves[event.keyCode]) {
+            const p = moves[event.keyCode](piece.current);
+            const ctx = getContext();
+            piece.current.move(p);
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            drawBoard(ctx);
+            piece.current.draw();
+        }
     };
     
     useEffect(() => {
         const ctx = getContext();
-        const piece = new Piece(ctx);
+        const p = new Piece(ctx);
         drawBoard(ctx);
-        piece.draw();
-    });
+        p.draw();
+        piece.current = p;
+    }, []);
+
+    useEffect(() => {
+
+        document.addEventListener('keydown', keyEvent);
+        return () => {
+            document.removeEventListener('keydown', keyEvent);
+        };
+    }, []);
     
     return (
         <>

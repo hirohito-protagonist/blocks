@@ -3,6 +3,7 @@ export const ROWS = 20;
 export const BLOCK_SIZE = 30;
 
 export const SHAPES = [
+    [],
     [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
@@ -39,3 +40,9 @@ export const SHAPES = [
         [0, 0, 0]
     ]
 ];
+
+export class KEY {
+    static readonly LEFT = 37;
+    static readonly RIGHT = 39;
+    static readonly DOWN = 40;
+}
