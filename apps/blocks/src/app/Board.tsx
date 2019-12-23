@@ -1,6 +1,7 @@
 import React, {useEffect, createRef, useRef} from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY } from './constants';
 import { Piece, IPiece } from './piece';
+import { isNotInCollision } from './collision';
 
 export default function Board() {
 
@@ -57,7 +58,9 @@ export default function Board() {
         if (moves[event.keyCode]) {
             const p = moves[event.keyCode](piece.current);
             const ctx = getContext();
-            piece.current.move(p);
+            if (isNotInCollision(p, grid)) {
+                piece.current.move(p);
+            }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             drawBoard(ctx);
             piece.current.draw();
