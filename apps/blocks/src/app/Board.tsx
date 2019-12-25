@@ -11,6 +11,7 @@ export default function Board() {
         [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
         [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1}),
         [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
+        [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1})
     };
     let canvasCntext = createRef();
 
@@ -56,9 +57,15 @@ export default function Board() {
     const keyEvent = (event: KeyboardEvent) => {
         
         if (moves[event.keyCode]) {
-            const p = moves[event.keyCode](piece.current);
+            let p = moves[event.keyCode](piece.current);
             const ctx = getContext();
-            if (isNotInCollision(p, grid)) {
+            if (event.keyCode === KEY.SPACE) {
+                while (isNotInCollision(p, grid)) {
+                    piece.current.move(p);
+                    p = moves[KEY.DOWN](piece.current);
+                }
+            }
+            else if (isNotInCollision(p, grid)) {
                 piece.current.move(p);
             }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
