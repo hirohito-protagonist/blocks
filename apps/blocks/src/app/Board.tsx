@@ -2,6 +2,7 @@ import React, {useEffect, createRef, useRef} from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
+import { rotate } from './rotate';
 
 export default function Board() {
 
@@ -11,7 +12,8 @@ export default function Board() {
         [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
         [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1}),
         [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
-        [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1})
+        [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
+        [KEY.UP]: (p: IPiece): IPiece => rotate(p)
     };
     let canvasCntext = createRef();
 
