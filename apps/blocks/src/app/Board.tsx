@@ -51,19 +51,25 @@ export default function Board() {
 
     const drop = () => {
         let p = moves[KEY.DOWN](piece.current);
-        piece.current.move(p);
+        if (isNotInCollision(p, grid)) {
+            piece.current.move(p);
+        }
+
+        return true;
     };
 
     const animate = (now = 0) => {
         time.elapsed = now - time.start;
         if (time.elapsed > time.level) {
             time.start = now;
-            drop();
+            if (!drop()) {
+                return;
+            }
         }
         const ctx = getContext();
         drawBoard(ctx);
         piece.current.draw();
-        requestAnimationFrame(animate);
+        window.requestAnimationFrame(animate);
     };
 
     const handlePlay = () => {
