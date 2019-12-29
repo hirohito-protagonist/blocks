@@ -49,10 +49,23 @@ export default function Board() {
         addOutlines(ctx);
     };
 
+    const freeze = () => {
+        piece.current.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value > 0) {
+                    grid[y + piece.current.y][x + piece.current.x] = value;
+                }
+            });
+        });
+    };
+
     const drop = () => {
         let p = moves[KEY.DOWN](piece.current);
         if (isNotInCollision(p, grid)) {
             piece.current.move(p);
+        } else {
+            freeze();
+            piece.current = new Piece(getContext());
         }
 
         return true;
