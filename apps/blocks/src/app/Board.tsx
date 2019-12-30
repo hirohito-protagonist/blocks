@@ -7,7 +7,7 @@ import { rotate } from './rotate';
 export default function Board() {
 
     const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-    let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: 0 };
+    let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: 800 };
     const piece = useRef<Piece>();
     const moves = {
         [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
@@ -65,6 +65,9 @@ export default function Board() {
             piece.current.move(p);
         } else {
             freeze();
+            if (piece.current.y === 0) {
+                return false;
+            }
             piece.current = new Piece(getContext());
         }
 
@@ -88,11 +91,6 @@ export default function Board() {
     const handlePlay = () => {
         time.start = performance.now();
         animate();
-        // const ctx = getContext();
-        // const p = new Piece(ctx);
-        // piece.current = p;
-        // drawBoard(ctx);
-        // p.draw();
     };
 
     const keyEvent = (event: KeyboardEvent) => {
