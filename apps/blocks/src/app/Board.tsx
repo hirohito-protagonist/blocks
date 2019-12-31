@@ -6,7 +6,7 @@ import { rotate } from './rotate';
 
 export default function Board() {
 
-    const grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+    let grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
     let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: 800 };
     const piece = useRef<Piece>();
     const moves = {
@@ -59,12 +59,24 @@ export default function Board() {
         });
     };
 
+    const clearLines = (board: number[][]): number[][] => {
+        const g = [...board];
+        g.forEach((row, y) => {
+            if (row.every(value => value !== 0)) {
+                g.splice(y, 1);
+                g.unshift(Array(COLUMNS).fill(0));
+            }
+        });
+        return g;
+    };
+
     const drop = () => {
         let p = moves[KEY.DOWN](piece.current);
         if (isNotInCollision(p, grid)) {
             piece.current.move(p);
         } else {
             freeze();
+            grid = clearLines(grid);
             if (piece.current.y === 0) {
                 return false;
             }
