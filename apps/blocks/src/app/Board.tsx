@@ -1,4 +1,4 @@
-import React, {useEffect, createRef, useRef} from 'react';
+import React, {useEffect, createRef, useRef, MutableRefObject} from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
@@ -49,14 +49,16 @@ export default function Board() {
         addOutlines(ctx);
     };
 
-    const freeze = () => {
-        piece.current.shape.forEach((row, y) => {
+    const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
+        const g = [...board];
+        p.current.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    grid[y + piece.current.y][x + piece.current.x] = value;
+                    g[y + p.current.y][x + p.current.x] = value;
                 }
             });
         });
+        return g;
     };
 
     const clearLines = (board: number[][]): number[][] => {
@@ -70,17 +72,17 @@ export default function Board() {
         return g;
     };
 
-    const drop = () => {
-        let p = moves[KEY.DOWN](piece.current);
-        if (isNotInCollision(p, grid)) {
-            piece.current.move(p);
+    const drop = (p: MutableRefObject<Piece>): boolean => {
+        let newPiece = moves[KEY.DOWN](p.current);
+        if (isNotInCollision(newPiece, grid)) {
+            p.current.move(newPiece);
         } else {
-            freeze();
+            grid = freeze(p, grid);
             grid = clearLines(grid);
-            if (piece.current.y === 0) {
+            if (p.current.y === 0) {
                 return false;
             }
-            piece.current = new Piece(getContext());
+            p.current = new Piece(getContext());
         }
 
         return true;
@@ -90,7 +92,7 @@ export default function Board() {
         time.elapsed = now - time.start;
         if (time.elapsed > time.level) {
             time.start = now;
-            if (!drop()) {
+            if (!drop(piece)) {
                 return;
             }
         }
