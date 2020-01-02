@@ -88,15 +88,24 @@ export default function Board() {
         return true;
     };
 
+    const gameOver = (ctx: CanvasRenderingContext2D): void => {
+        ctx.fillStyle = 'green';
+        ctx.fillRect(1, 3, 8, 1.2);
+        ctx.font = '1px Arial';
+        ctx.fillStyle = 'white';
+        ctx.fillText('GAME OVER', 1.8, 4);
+    };
+
     const animate = (now = 0) => {
+        const ctx = getContext();
         time.elapsed = now - time.start;
         if (time.elapsed > time.level) {
             time.start = now;
             if (!drop(piece)) {
+                gameOver(ctx);
                 return;
             }
         }
-        const ctx = getContext();
         drawBoard(ctx);
         piece.current.draw();
         window.requestAnimationFrame(animate);
