@@ -116,6 +116,11 @@ export default function Board() {
         animate();
     };
 
+    const handleReset = () => {
+        grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+        time = { start: 0, elapsed: 0, level: 800 };
+    };
+
     const keyEvent = (event: KeyboardEvent) => {
         
         if (moves[event.keyCode]) {
@@ -156,6 +161,7 @@ export default function Board() {
         <>
             <canvas ref={canvasCntext} className="c-game-board"></canvas>
             <button onClick={handlePlay}>Play</button>
+            <button onClick={handleReset}>Reset</button>
         </>
     );
 };
