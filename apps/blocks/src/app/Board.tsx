@@ -1,5 +1,5 @@
 import React, {useEffect, createRef, useRef, MutableRefObject} from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, KEY } from './constants';
+import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
 import { rotate } from './rotate';
@@ -7,7 +7,9 @@ import { rotate } from './rotate';
 export default function Board() {
 
     let grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-    let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: 800 };
+    let level = 0;
+    let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: LEVEL[level] };
+    
     const piece = useRef<Piece>();
     const moves = {
         [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
@@ -79,6 +81,8 @@ export default function Board() {
         } else {
             grid = freeze(p, grid);
             grid = clearLines(grid);
+            level = level <= 10 ? level + 1 : level;
+            time.level = LEVEL[level];
             if (p.current.y === 0) {
                 return false;
             }
@@ -118,7 +122,7 @@ export default function Board() {
 
     const handleReset = () => {
         grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-        time = { start: 0, elapsed: 0, level: 800 };
+        time = { start: 0, elapsed: 0, level: LEVEL[0] };
     };
 
     const keyEvent = (event: KeyboardEvent) => {
