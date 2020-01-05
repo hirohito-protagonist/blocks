@@ -81,7 +81,7 @@ export default function Board() {
         } else {
             grid = freeze(p, grid);
             grid = clearLines(grid);
-            level = level <= 10 ? level + 1 : level;
+            level = level < 10 ? level + 1 : level;
             time.level = LEVEL[level];
             if (p.current.y === 0) {
                 return false;
@@ -121,8 +121,9 @@ export default function Board() {
     };
 
     const handleReset = () => {
+        level = 0;
         grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-        time = { start: 0, elapsed: 0, level: LEVEL[0] };
+        time = { start: 0, elapsed: 0, level: LEVEL[level] };
     };
 
     const keyEvent = (event: KeyboardEvent) => {
