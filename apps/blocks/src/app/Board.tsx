@@ -4,9 +4,68 @@ import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
 import { rotate } from './rotate';
 
-export default function Board() {
+const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
 
-    let grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
+    const g = [...board];
+    p.current.shape.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value > 0) {
+                g[y + p.current.y][x + p.current.x] = value;
+            }
+        });
+    });
+    return g;
+};
+
+const addOutlines = (ctx: CanvasRenderingContext2D) => {
+    for (let i = 0; i < COLUMNS; i++) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
+    }
+    for (let i = 0; i < ROWS; i++) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, i, ctx.canvas.width, 0.025);
+    }
+};
+
+const clearLines = (board: number[][]): number[][] => {
+    const g = [...board];
+    g.forEach((row, y) => {
+        if (row.every(value => value !== 0)) {
+            g.splice(y, 1);
+            g.unshift(Array(COLUMNS).fill(0));
+        }
+    });
+    return g;
+};
+
+const drawBoard = (ctx: CanvasRenderingContext2D, board:number[][]): void => {
+    ctx.canvas.width = COLUMNS * BLOCK_SIZE;
+    ctx.canvas.height = ROWS * BLOCK_SIZE;
+    ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+    board.forEach((row: any[], y) => {
+        row.forEach((value, x) => {
+            if (value > 0) {
+                ctx.fillStyle = 'green';
+                ctx.fillRect(x, y, 1, 1);
+            }   
+        });
+    });
+    addOutlines(ctx);
+};
+
+const gameOver = (ctx: CanvasRenderingContext2D): void => {
+    ctx.fillStyle = 'green';
+    ctx.fillRect(1, 3, 8, 1.2);
+    ctx.font = '1px Arial';
+    ctx.fillStyle = 'white';
+    ctx.fillText('GAME OVER', 1.8, 4);
+};
+
+const Board = () => {
+
+    let grid = createEmptyBoard();
     let level = 0;
     let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: LEVEL[level] };
     
@@ -23,55 +82,6 @@ export default function Board() {
     const getContext = (): CanvasRenderingContext2D =>  {
         const canvas: HTMLCanvasElement = canvasCntext.current;
         return canvas.getContext('2d');
-    };
-
-    const addOutlines = (ctx: CanvasRenderingContext2D) => {
-        for (let i = 0; i < COLUMNS; i++) {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
-        }
-        for (let i = 0; i < ROWS; i++) {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, i, ctx.canvas.width, 0.025);
-        }
-    };
-
-    const drawBoard = (ctx: CanvasRenderingContext2D) => {
-        ctx.canvas.width = COLUMNS * BLOCK_SIZE;
-        ctx.canvas.height = ROWS * BLOCK_SIZE;
-        ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-        grid.forEach((row: any[], y) => {
-            row.forEach((value, x) => {
-                if (value > 0) {
-                    ctx.fillStyle = 'green';
-                    ctx.fillRect(x, y, 1, 1);
-                }   
-            });
-        });
-        addOutlines(ctx);
-    };
-
-    const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
-        const g = [...board];
-        p.current.shape.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value > 0) {
-                    g[y + p.current.y][x + p.current.x] = value;
-                }
-            });
-        });
-        return g;
-    };
-
-    const clearLines = (board: number[][]): number[][] => {
-        const g = [...board];
-        g.forEach((row, y) => {
-            if (row.every(value => value !== 0)) {
-                g.splice(y, 1);
-                g.unshift(Array(COLUMNS).fill(0));
-            }
-        });
-        return g;
     };
 
     const drop = (p: MutableRefObject<Piece>): boolean => {
@@ -92,14 +102,6 @@ export default function Board() {
         return true;
     };
 
-    const gameOver = (ctx: CanvasRenderingContext2D): void => {
-        ctx.fillStyle = 'green';
-        ctx.fillRect(1, 3, 8, 1.2);
-        ctx.font = '1px Arial';
-        ctx.fillStyle = 'white';
-        ctx.fillText('GAME OVER', 1.8, 4);
-    };
-
     const animate = (now = 0) => {
         const ctx = getContext();
         time.elapsed = now - time.start;
@@ -110,7 +112,7 @@ export default function Board() {
                 return;
             }
         }
-        drawBoard(ctx);
+        drawBoard(ctx, grid);
         piece.current.draw();
         window.requestAnimationFrame(animate);
     };
@@ -122,7 +124,7 @@ export default function Board() {
 
     const handleReset = () => {
         level = 0;
-        grid = Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
+        grid = createEmptyBoard();
         time = { start: 0, elapsed: 0, level: LEVEL[level] };
     };
 
@@ -141,7 +143,7 @@ export default function Board() {
                 piece.current.move(p);
             }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            drawBoard(ctx);
+            drawBoard(ctx, grid);
             piece.current.draw();
         }
     };
@@ -149,9 +151,9 @@ export default function Board() {
     useEffect(() => {
         const ctx = getContext();
         const p = new Piece(ctx);
-        drawBoard(ctx);
+        drawBoard(ctx, grid);
         p.draw();
-        piece.current = p;
+        piece.current = null;
     }, []);
 
     useEffect(() => {
@@ -170,3 +172,5 @@ export default function Board() {
         </>
     );
 };
+
+export default Board;
