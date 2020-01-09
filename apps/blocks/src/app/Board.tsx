@@ -118,6 +118,8 @@ const Board = () => {
     };
 
     const handlePlay = () => {
+        const ctx = getContext();
+        piece.current = new Piece(ctx);
         time.start = performance.now();
         animate();
     };
@@ -150,9 +152,7 @@ const Board = () => {
     
     useEffect(() => {
         const ctx = getContext();
-        const p = new Piece(ctx);
         drawBoard(ctx, grid);
-        p.draw();
         piece.current = null;
     }, []);
 
