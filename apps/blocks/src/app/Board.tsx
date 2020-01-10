@@ -167,8 +167,8 @@ const Board = () => {
     return (
         <>
             <canvas ref={canvasCntext} className="c-game-board"></canvas>
-            <button onClick={handlePlay}>Play</button>
-            <button onClick={handleReset}>Reset</button>
+            <button onClick={handlePlay} onKeyDown={(e) => e.preventDefault()}>Play</button>
+            <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>Reset</button>
         </>
     );
 };
