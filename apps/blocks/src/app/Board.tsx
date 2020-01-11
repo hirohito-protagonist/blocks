@@ -63,8 +63,24 @@ const gameOver = (ctx: CanvasRenderingContext2D): void => {
     ctx.fillText('GAME OVER', 1.8, 4);
 };
 
+const useGameLoop = (callback) => {
+
+    const requestRef = useRef<number>();
+
+    const animate = (time) => {
+        callback(time);
+        requestRef.current = requestAnimationFrame(animate);
+    };
+
+    useEffect(() => {
+        requestRef.current = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(requestRef.current);
+    }, []);
+};
+
 const Board = () => {
 
+    let isGameStarted = false;
     let grid = createEmptyBoard();
     let level = 0;
     let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: LEVEL[level] };
@@ -102,32 +118,37 @@ const Board = () => {
         return true;
     };
 
-    const animate = (now = 0) => {
-        const ctx = getContext();
-        time.elapsed = now - time.start;
-        if (time.elapsed > time.level) {
-            time.start = now;
-            if (!drop(piece)) {
-                gameOver(ctx);
-                return;
+    useGameLoop((deltaTime) => {
+        
+        if (isGameStarted) {
+            const ctx = getContext();
+            time.elapsed = deltaTime - time.start;
+            if (time.elapsed > time.level) {
+                time.start = deltaTime;
+                if (!drop(piece)) {
+                    isGameStarted = false;
+                    gameOver(ctx);
+                    return;
+                }
             }
+            drawBoard(ctx, grid);
+            piece.current.draw();
         }
-        drawBoard(ctx, grid);
-        piece.current.draw();
-        window.requestAnimationFrame(animate);
-    };
+        
+    });
 
     const handlePlay = () => {
         const ctx = getContext();
         piece.current = new Piece(ctx);
         time.start = performance.now();
-        animate();
+        isGameStarted = true;
     };
 
     const handleReset = () => {
         level = 0;
         grid = createEmptyBoard();
         time = { start: 0, elapsed: 0, level: LEVEL[level] };
+        isGameStarted = true;
     };
 
     const keyEvent = (event: KeyboardEvent) => {
