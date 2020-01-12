@@ -1,4 +1,4 @@
-import React, {useEffect, createRef, useRef, MutableRefObject} from 'react';
+import React, {useEffect, createRef, useRef, MutableRefObject, useState} from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
@@ -63,7 +63,7 @@ const gameOver = (ctx: CanvasRenderingContext2D): void => {
     ctx.fillText('GAME OVER', 1.8, 4);
 };
 
-const useGameLoop = (callback) => {
+const useGameLoop = (callback, deps = []) => {
 
     const requestRef = useRef<number>();
 
@@ -75,16 +75,15 @@ const useGameLoop = (callback) => {
     useEffect(() => {
         requestRef.current = requestAnimationFrame(animate);
         return () => cancelAnimationFrame(requestRef.current);
-    }, []);
+    }, deps);
 };
 
 const Board = () => {
 
-    let isGameStarted = false;
-    let grid = createEmptyBoard();
+    const [isGameStarted, setGameStarted] = useState<boolean>(false);
+    const [grid, setGrid] = useState(createEmptyBoard());
     let level = 0;
-    let time: { start: number; elapsed: number; level: number } = { start: 0, elapsed: 0, level: LEVEL[level] };
-    
+    const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level] });
     const piece = useRef<Piece>();
     const moves = {
         [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
@@ -93,7 +92,7 @@ const Board = () => {
         [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
         [KEY.UP]: (p: IPiece): IPiece => rotate(p)
     };
-    let canvasCntext = createRef();
+    const canvasCntext = useRef<HTMLCanvasElement>(null);
 
     const getContext = (): CanvasRenderingContext2D =>  {
         const canvas: HTMLCanvasElement = canvasCntext.current;
@@ -105,10 +104,9 @@ const Board = () => {
         if (isNotInCollision(newPiece, grid)) {
             p.current.move(newPiece);
         } else {
-            grid = freeze(p, grid);
-            grid = clearLines(grid);
+            setGrid(clearLines(freeze(p, grid)));
             level = level < 10 ? level + 1 : level;
-            time.level = LEVEL[level];
+            time.current.level = LEVEL[level];
             if (p.current.y === 0) {
                 return false;
             }
@@ -118,37 +116,18 @@ const Board = () => {
         return true;
     };
 
-    useGameLoop((deltaTime) => {
-        
-        if (isGameStarted) {
-            const ctx = getContext();
-            time.elapsed = deltaTime - time.start;
-            if (time.elapsed > time.level) {
-                time.start = deltaTime;
-                if (!drop(piece)) {
-                    isGameStarted = false;
-                    gameOver(ctx);
-                    return;
-                }
-            }
-            drawBoard(ctx, grid);
-            piece.current.draw();
-        }
-        
-    });
-
     const handlePlay = () => {
         const ctx = getContext();
         piece.current = new Piece(ctx);
-        time.start = performance.now();
-        isGameStarted = true;
+        time.current.start = performance.now();
+        setGameStarted(true);
     };
 
     const handleReset = () => {
         level = 0;
-        grid = createEmptyBoard();
-        time = { start: 0, elapsed: 0, level: LEVEL[level] };
-        isGameStarted = true;
+        setGrid(createEmptyBoard());
+        time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
+        setGameStarted(true);
     };
 
     const keyEvent = (event: KeyboardEvent) => {
@@ -184,7 +163,25 @@ const Board = () => {
             document.removeEventListener('keydown', keyEvent);
         };
     }, []);
-    
+
+    useGameLoop((now) => {
+        if (isGameStarted) {
+            const ctx = getContext();
+            time.current.elapsed = now - time.current.start;
+            if (time.current.elapsed > time.current.level) {
+                time.current.start = now;
+                if (!drop(piece)) {
+                    setGameStarted(false);
+                    gameOver(ctx);
+                    return;
+                }
+            }
+            drawBoard(ctx, grid);
+            piece.current.draw();
+        }
+        
+    }, [isGameStarted]);
+
     return (
         <>
             <canvas ref={canvasCntext} className="c-game-board"></canvas>
