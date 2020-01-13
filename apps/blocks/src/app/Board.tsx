@@ -78,20 +78,22 @@ const useGameLoop = (callback, deps = []) => {
     }, deps);
 };
 
+const moves = {
+    [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
+    [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1}),
+    [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
+    [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
+    [KEY.UP]: (p: IPiece): IPiece => rotate(p)
+};
+
 const Board = () => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
-    const [grid, setGrid] = useState(createEmptyBoard());
-    let level = 0;
+    const [level, setLevel] = useState(0);
+    const grid = useRef(createEmptyBoard());
     const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level] });
     const piece = useRef<Piece>();
-    const moves = {
-        [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1}),
-        [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1}),
-        [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
-        [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1}),
-        [KEY.UP]: (p: IPiece): IPiece => rotate(p)
-    };
+
     const canvasCntext = useRef<HTMLCanvasElement>(null);
 
     const getContext = (): CanvasRenderingContext2D =>  {
@@ -101,12 +103,13 @@ const Board = () => {
 
     const drop = (p: MutableRefObject<Piece>): boolean => {
         let newPiece = moves[KEY.DOWN](p.current);
-        if (isNotInCollision(newPiece, grid)) {
+        if (isNotInCollision(newPiece, grid.current)) {
             p.current.move(newPiece);
         } else {
-            setGrid(clearLines(freeze(p, grid)));
-            level = level < 10 ? level + 1 : level;
-            time.current.level = LEVEL[level];
+            grid.current = clearLines(freeze(p, grid.current));
+            const lvl = level < 10 ? level + 1 : level;
+            time.current.level = LEVEL[lvl];
+            setLevel(lvl);
             if (p.current.y === 0) {
                 return false;
             }
@@ -124,8 +127,8 @@ const Board = () => {
     };
 
     const handleReset = () => {
-        level = 0;
-        setGrid(createEmptyBoard());
+        setLevel(0);
+        grid.current = createEmptyBoard();
         time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
         setGameStarted(true);
     };
@@ -136,23 +139,23 @@ const Board = () => {
             let p = moves[event.keyCode](piece.current);
             const ctx = getContext();
             if (event.keyCode === KEY.SPACE) {
-                while (isNotInCollision(p, grid)) {
+                while (isNotInCollision(p, grid.current)) {
                     piece.current.move(p);
                     p = moves[KEY.DOWN](piece.current);
                 }
             }
-            else if (isNotInCollision(p, grid)) {
+            else if (isNotInCollision(p, grid.current)) {
                 piece.current.move(p);
             }
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            drawBoard(ctx, grid);
+            drawBoard(ctx, grid.current);
             piece.current.draw();
         }
     };
     
     useEffect(() => {
         const ctx = getContext();
-        drawBoard(ctx, grid);
+        drawBoard(ctx, grid.current);
         piece.current = null;
     }, []);
 
@@ -162,7 +165,7 @@ const Board = () => {
         return () => {
             document.removeEventListener('keydown', keyEvent);
         };
-    }, []);
+    }, [isGameStarted]);
 
     useGameLoop((now) => {
         if (isGameStarted) {
@@ -176,7 +179,7 @@ const Board = () => {
                     return;
                 }
             }
-            drawBoard(ctx, grid);
+            drawBoard(ctx, grid.current);
             piece.current.draw();
         }
         
