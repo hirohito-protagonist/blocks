@@ -94,6 +94,7 @@ const Board = () => {
     const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level] });
     const piece = useRef<Piece>();
 
+
     const canvasCntext = useRef<HTMLCanvasElement>(null);
 
     const getContext = (): CanvasRenderingContext2D =>  {
@@ -134,10 +135,12 @@ const Board = () => {
     };
 
     const keyEvent = (event: KeyboardEvent) => {
-        
-        if (moves[event.keyCode]) {
+        const ctx = getContext();
+        if (event.keyCode === KEY.ESC) {
+            gameOver(ctx);
+            setGameStarted(false);
+        } else if (moves[event.keyCode]) {
             let p = moves[event.keyCode](piece.current);
-            const ctx = getContext();
             if (event.keyCode === KEY.SPACE) {
                 while (isNotInCollision(p, grid.current)) {
                     piece.current.move(p);

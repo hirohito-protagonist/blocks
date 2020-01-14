@@ -47,6 +47,7 @@ export class KEY {
     static readonly DOWN = 40;
     static readonly UP = 38;
     static readonly SPACE = 32;
+    static readonly ESC = 27;
 }
 
 export class LEVEL {
