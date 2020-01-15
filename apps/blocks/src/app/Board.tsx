@@ -128,10 +128,14 @@ const Board = () => {
     };
 
     const handleReset = () => {
+        const ctx = getContext();
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         setLevel(0);
         grid.current = createEmptyBoard();
         time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
-        setGameStarted(true);
+        setGameStarted(false);
+        drawBoard(ctx, grid.current);
+        gameOver(ctx);
     };
 
     const keyEvent = (event: KeyboardEvent) => {
@@ -179,6 +183,8 @@ const Board = () => {
                 if (!drop(piece)) {
                     setGameStarted(false);
                     gameOver(ctx);
+                    grid.current = createEmptyBoard();
+                    time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
                     return;
                 }
             }
@@ -191,8 +197,11 @@ const Board = () => {
     return (
         <>
             <canvas ref={canvasCntext} className="c-game-board"></canvas>
-            <button onClick={handlePlay} onKeyDown={(e) => e.preventDefault()}>Play</button>
-            <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>Reset</button>
+            {isGameStarted ? (
+                <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>Reset</button>
+            ) : (
+                <button onClick={handlePlay} onKeyDown={(e) => e.preventDefault()}>Play</button>
+            )}
         </>
     );
 };
