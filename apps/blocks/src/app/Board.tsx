@@ -86,12 +86,12 @@ const moves = {
     [KEY.UP]: (p: IPiece): IPiece => rotate(p)
 };
 
-const Board = () => {
+const Board = ({ onGameInformation }) => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
-    const [level, setLevel] = useState(0);
+    const level = useRef(0);
     const grid = useRef(createEmptyBoard());
-    const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level] });
+    const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level.current] });
     const piece = useRef<Piece>();
 
 
@@ -108,9 +108,10 @@ const Board = () => {
             p.current.move(newPiece);
         } else {
             grid.current = clearLines(freeze(p, grid.current));
-            const lvl = level < 10 ? level + 1 : level;
+            const lvl = level.current < 10 ? level.current + 1 : level.current;
+            level.current = lvl;
             time.current.level = LEVEL[lvl];
-            setLevel(lvl);
+            onGameInformation({ score: 0, level: lvl, lines: 0 })
             if (p.current.y === 0) {
                 return false;
             }
@@ -130,9 +131,9 @@ const Board = () => {
     const handleReset = () => {
         const ctx = getContext();
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        setLevel(0);
+        level.current = 0;
         grid.current = createEmptyBoard();
-        time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
+        time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
         setGameStarted(false);
         drawBoard(ctx, grid.current);
         gameOver(ctx);
@@ -184,7 +185,7 @@ const Board = () => {
                     setGameStarted(false);
                     gameOver(ctx);
                     grid.current = createEmptyBoard();
-                    time.current = { start: 0, elapsed: 0, level: LEVEL[level] };
+                    time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
                     return;
                 }
             }
