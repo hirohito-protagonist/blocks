@@ -1,5 +1,5 @@
 import React, {useEffect, createRef, useRef, MutableRefObject, useState} from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL } from './constants';
+import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
 import { rotate } from './rotate';
@@ -29,15 +29,21 @@ const addOutlines = (ctx: CanvasRenderingContext2D) => {
     }
 };
 
-const clearLines = (board: number[][]): number[][] => {
+const clearLines = (board: number[][]): { board: number[][]; clearedLines: number; } => {
+    
+    let lines = 0;
     const g = [...board];
     g.forEach((row, y) => {
         if (row.every(value => value !== 0)) {
+            lines++;
             g.splice(y, 1);
             g.unshift(Array(COLUMNS).fill(0));
         }
     });
-    return g;
+    return {
+        board: g,
+        clearedLines: lines
+    };
 };
 
 const drawBoard = (ctx: CanvasRenderingContext2D, board:number[][]): void => {
@@ -86,6 +92,21 @@ const moves = {
     [KEY.UP]: (p: IPiece): IPiece => rotate(p)
 };
 
+const getLinesClearedPoints = (lines: number, level: number): number => {
+    const lineClearPoints =
+        lines === 1
+        ? POINTS.SINGLE
+        : lines === 2
+        ? POINTS.DOUBLE
+        : lines === 3
+        ? POINTS.TRIPLE
+        : lines === 4
+        ? POINTS.TETRIS
+        : 0;
+
+    return (level + 1) * lineClearPoints;
+};
+
 const Board = ({ onGameInformation }) => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
@@ -107,11 +128,13 @@ const Board = ({ onGameInformation }) => {
         if (isNotInCollision(newPiece, grid.current)) {
             p.current.move(newPiece);
         } else {
-            grid.current = clearLines(freeze(p, grid.current));
+            const { board, clearedLines } = clearLines(freeze(p, grid.current));
+            grid.current = board;
             const lvl = level.current < 10 ? level.current + 1 : level.current;
             level.current = lvl;
             time.current.level = LEVEL[lvl];
-            onGameInformation({ score: 0, level: lvl, lines: 0 })
+            const points = getLinesClearedPoints(clearedLines, lvl);
+            onGameInformation({ score: points, level: lvl, lines: 0 })
             if (p.current.y === 0) {
                 return false;
             }
