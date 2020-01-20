@@ -111,6 +111,7 @@ const Board = ({ onGameInformation }) => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
     const level = useRef(0);
+    const gameInformation = useRef({ score: 0, level: 0, lines: 0 });
     const grid = useRef(createEmptyBoard());
     const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level.current] });
     const piece = useRef<Piece>();
@@ -134,7 +135,9 @@ const Board = ({ onGameInformation }) => {
             level.current = lvl;
             time.current.level = LEVEL[lvl];
             const points = getLinesClearedPoints(clearedLines, lvl);
-            onGameInformation({ score: points, level: lvl, lines: 0 })
+            gameInformation.current.score += points;
+            gameInformation.current.level = lvl;
+            onGameInformation({ ...gameInformation.current });
             if (p.current.y === 0) {
                 return false;
             }
@@ -157,9 +160,12 @@ const Board = ({ onGameInformation }) => {
         level.current = 0;
         grid.current = createEmptyBoard();
         time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
+        gameInformation.current.level = 0;
+        gameInformation.current.score = 0;
         setGameStarted(false);
         drawBoard(ctx, grid.current);
         gameOver(ctx);
+        onGameInformation({ ...gameInformation.current });
     };
 
     const keyEvent = (event: KeyboardEvent) => {
