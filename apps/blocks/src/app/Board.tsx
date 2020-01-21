@@ -135,6 +135,7 @@ const Board = ({ onGameInformation }) => {
             level.current = lvl;
             time.current.level = LEVEL[lvl];
             const points = getLinesClearedPoints(clearedLines, lvl);
+            gameInformation.current.lines += clearedLines;
             gameInformation.current.score += points;
             gameInformation.current.level = lvl;
             onGameInformation({ ...gameInformation.current });
