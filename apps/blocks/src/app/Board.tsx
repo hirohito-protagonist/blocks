@@ -148,21 +148,25 @@ const Board = ({ onGameInformation }) => {
         return true;
     };
 
+    const resetState = () => {
+        level.current = 0;
+        grid.current = createEmptyBoard();
+        time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
+        gameInformation.current = { level: 0, score: 0, lines: 0  };        
+    };
+
     const handlePlay = () => {
         const ctx = getContext();
         piece.current = new Piece(ctx);
         time.current.start = performance.now();
+        resetState();
         setGameStarted(true);
     };
 
     const handleReset = () => {
         const ctx = getContext();
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        level.current = 0;
-        grid.current = createEmptyBoard();
-        time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
-        gameInformation.current.level = 0;
-        gameInformation.current.score = 0;
+        resetState();
         setGameStarted(false);
         drawBoard(ctx, grid.current);
         gameOver(ctx);
