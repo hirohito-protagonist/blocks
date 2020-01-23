@@ -161,6 +161,7 @@ const Board = ({ onGameInformation }) => {
         time.current.start = performance.now();
         resetState();
         setGameStarted(true);
+        onGameInformation({ ...gameInformation.current });
     };
 
     const handleReset = () => {
@@ -170,7 +171,6 @@ const Board = ({ onGameInformation }) => {
         setGameStarted(false);
         drawBoard(ctx, grid.current);
         gameOver(ctx);
-        onGameInformation({ ...gameInformation.current });
     };
 
     const keyEvent = (event: KeyboardEvent) => {
@@ -225,7 +225,7 @@ const Board = ({ onGameInformation }) => {
             }
             drawBoard(ctx, grid.current);
             piece.current.draw();
-        }
+        }   
         
     }, [isGameStarted]);
 
