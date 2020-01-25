@@ -110,10 +110,9 @@ const getLinesClearedPoints = (lines: number, level: number): number => {
 const Board = ({ onGameInformation }) => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
-    const level = useRef(0);
     const gameInformation = useRef({ score: 0, level: 0, lines: 0 });
     const grid = useRef(createEmptyBoard());
-    const time = useRef({ start: 0, elapsed: 0, level: LEVEL[level.current] });
+    const time = useRef({ start: 0, elapsed: 0, level: LEVEL[0] });
     const piece = useRef<Piece>();
 
 
@@ -131,8 +130,8 @@ const Board = ({ onGameInformation }) => {
         } else {
             const { board, clearedLines } = clearLines(freeze(p, grid.current));
             grid.current = board;
-            const lvl = level.current < 10 ? level.current + 1 : level.current;
-            level.current = lvl;
+            const lvl = gameInformation.current.level < 10 ? gameInformation.current.level + 1 : gameInformation.current.level;
+
             time.current.level = LEVEL[lvl];
             const points = getLinesClearedPoints(clearedLines, lvl);
             gameInformation.current.lines += clearedLines;
@@ -149,9 +148,8 @@ const Board = ({ onGameInformation }) => {
     };
 
     const resetState = () => {
-        level.current = 0;
         grid.current = createEmptyBoard();
-        time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
+        time.current = { start: 0, elapsed: 0, level: LEVEL[0] };
         gameInformation.current = { level: 0, score: 0, lines: 0  };        
     };
 
@@ -219,7 +217,7 @@ const Board = ({ onGameInformation }) => {
                     setGameStarted(false);
                     gameOver(ctx);
                     grid.current = createEmptyBoard();
-                    time.current = { start: 0, elapsed: 0, level: LEVEL[level.current] };
+                    time.current = { start: 0, elapsed: 0, level: LEVEL[gameInformation.current.level] };
                     return;
                 }
             }
