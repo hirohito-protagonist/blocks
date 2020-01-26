@@ -110,6 +110,7 @@ const getLinesClearedPoints = (lines: number, level: number): number => {
 const Board = ({ onGameInformation }) => {
 
     const [isGameStarted, setGameStarted] = useState<boolean>(false);
+    const counters = useRef({ lines: 0 });
     const gameInformation = useRef({ score: 0, level: 0, lines: 0 });
     const grid = useRef(createEmptyBoard());
     const time = useRef({ start: 0, elapsed: 0, level: LEVEL[0] });
@@ -130,13 +131,20 @@ const Board = ({ onGameInformation }) => {
         } else {
             const { board, clearedLines } = clearLines(freeze(p, grid.current));
             grid.current = board;
-            const lvl = gameInformation.current.level < 10 ? gameInformation.current.level + 1 : gameInformation.current.level;
+            if (clearedLines > 0) {
 
-            time.current.level = LEVEL[lvl];
-            const points = getLinesClearedPoints(clearedLines, lvl);
-            gameInformation.current.lines += clearedLines;
-            gameInformation.current.score += points;
-            gameInformation.current.level = lvl;
+                const points = getLinesClearedPoints(clearedLines, gameInformation.current.level);
+                counters.current.lines += clearedLines;
+                if (counters.current.lines >= 5) {
+                    const lvl = gameInformation.current.level < 10 ? gameInformation.current.level + 1 : gameInformation.current.level;
+                    counters.current.lines -= 5;
+                    time.current.level = LEVEL[lvl];
+                    gameInformation.current.level = lvl;
+                }
+                gameInformation.current.lines += clearedLines;
+                gameInformation.current.score += points;
+            }
+
             onGameInformation({ ...gameInformation.current });
             if (p.current.y === 0) {
                 return false;
