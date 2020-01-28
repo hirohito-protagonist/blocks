@@ -20,11 +20,11 @@ const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
 
 const addOutlines = (ctx: CanvasRenderingContext2D) => {
     for (let i = 0; i < COLUMNS; i++) {
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = '#511159';
         ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
     }
     for (let i = 0; i < ROWS; i++) {
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = '#511159';
         ctx.fillRect(0, i, ctx.canvas.width, 0.025);
     }
 };
@@ -53,7 +53,7 @@ const drawBoard = (ctx: CanvasRenderingContext2D, board:number[][]): void => {
     board.forEach((row: any[], y) => {
         row.forEach((value, x) => {
             if (value > 0) {
-                ctx.fillStyle = 'green';
+                ctx.fillStyle = '#711673';
                 ctx.fillRect(x, y, 1, 1);
             }   
         });
@@ -62,7 +62,7 @@ const drawBoard = (ctx: CanvasRenderingContext2D, board:number[][]): void => {
 };
 
 const gameOver = (ctx: CanvasRenderingContext2D): void => {
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#711673';
     ctx.fillRect(1, 3, 8, 1.2);
     ctx.font = '1px Arial';
     ctx.fillStyle = 'white';

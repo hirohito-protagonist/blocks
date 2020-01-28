@@ -20,7 +20,7 @@ export class Piece implements IPiece {
 
     spawn() {
         this.shape = SHAPES[this.randomizeTetrominoType(7)];
-        this.color = 'red';
+        this.color = '#A62991';
         this.x = 3;
         this.y = 0;
     }
@@ -29,7 +29,7 @@ export class Piece implements IPiece {
         this.shape.forEach((row, y) => {
             row.forEach((value, x) => {
                 if (value > 0) {
-                    this.ctx.fillStyle = 'red';
+                    this.ctx.fillStyle = '#A62991';
                     const currentX = this.x + x;
                     const currentY = this.y + y;
                     this.ctx.fillRect(currentX, currentY, 1, 1);
