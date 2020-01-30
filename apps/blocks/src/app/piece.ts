@@ -1,50 +1,50 @@
 import { SHAPES } from './constants';
 
 export interface IPiece {
-    x: number;
-    y: number;
-    color: string;
-    shape: number[][];
+  x: number;
+  y: number;
+  color: string;
+  shape: number[][];
 }
 
 export class Piece implements IPiece {
 
-    x: number;
-    y: number;
-    color: string;
-    shape: number[][];
+  x: number;
+  y: number;
+  color: string;
+  shape: number[][];
 
-    constructor(private ctx: CanvasRenderingContext2D) {
-        this.spawn();
-    }
+  constructor(private ctx: CanvasRenderingContext2D) {
+    this.spawn();
+  }
 
-    spawn() {
-        this.shape = SHAPES[this.randomizeTetrominoType(7)];
-        this.color = '#A62991';
-        this.x = 3;
-        this.y = 0;
-    }
+  spawn() {
+    this.shape = SHAPES[this.randomizeTetrominoType(7)];
+    this.color = '#A62991';
+    this.x = 3;
+    this.y = 0;
+  }
 
-    draw() {
-        this.shape.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value > 0) {
-                    this.ctx.fillStyle = '#A62991';
-                    const currentX = this.x + x;
-                    const currentY = this.y + y;
-                    this.ctx.fillRect(currentX, currentY, 1, 1);
-                }
-            });
-        });
-    }
+  draw() {
+    this.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value > 0) {
+          this.ctx.fillStyle = '#A62991';
+          const currentX = this.x + x;
+          const currentY = this.y + y;
+          this.ctx.fillRect(currentX, currentY, 1, 1);
+        }
+      });
+    });
+  }
 
-    move(p: IPiece): void {
-        this.x = p.x;
-        this.y = p.y;
-        this.shape = p.shape;
-    }
+  move(p: IPiece): void {
+    this.x = p.x;
+    this.y = p.y;
+    this.shape = p.shape;
+  }
 
-    private randomizeTetrominoType(noOfTypes: number): number {
-        return Math.floor(Math.random() * noOfTypes + 1);
-    }
+  private randomizeTetrominoType(noOfTypes: number): number {
+    return Math.floor(Math.random() * noOfTypes + 1);
+  }
 }

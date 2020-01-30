@@ -9,9 +9,9 @@ export const App = () => {
   const [info, setInfo] = useState({ score: 0, level: 0, lines: 0 });
 
   const handleGameInformation = (inf) => {
-    setInfo({ ...inf})
+    setInfo({ ...inf })
   };
-  
+
   return (
     <div className="app">
       <Board onGameInformation={handleGameInformation} />
