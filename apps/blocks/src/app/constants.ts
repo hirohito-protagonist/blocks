@@ -42,11 +42,11 @@ export const SHAPES = [
 ];
 
 export class KEY {
-  static readonly LEFT = 37;
-  static readonly RIGHT = 39;
-  static readonly DOWN = 40;
-  static readonly UP = 38;
-  static readonly SPACE = 32;
+  static readonly A = 65;
+  static readonly D = 68;
+  static readonly S = 83;
+  static readonly W = 76;
+  static readonly L = 87;
   static readonly ESC = 27;
 }
 

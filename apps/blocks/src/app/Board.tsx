@@ -85,11 +85,11 @@ const useGameLoop = (callback, deps = []) => {
 };
 
 const moves = {
-  [KEY.LEFT]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1 }),
-  [KEY.RIGHT]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1 }),
-  [KEY.DOWN]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.SPACE]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.UP]: (p: IPiece): IPiece => rotate(p)
+  [KEY.A]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1 }),
+  [KEY.D]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1 }),
+  [KEY.S]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
+  [KEY.L]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
+  [KEY.W]: (p: IPiece): IPiece => rotate(p)
 };
 
 const getLinesClearedPoints = (lines: number, level: number): number => {
@@ -125,7 +125,7 @@ const Board = ({ onGameInformation }) => {
   };
 
   const drop = (p: MutableRefObject<Piece>): boolean => {
-    let newPiece = moves[KEY.DOWN](p.current);
+    let newPiece = moves[KEY.S](p.current);
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {
@@ -186,10 +186,10 @@ const Board = ({ onGameInformation }) => {
       setGameStarted(false);
     } else if (moves[event.keyCode]) {
       let p = moves[event.keyCode](piece.current);
-      if (event.keyCode === KEY.SPACE) {
+      if (event.keyCode === KEY.L) {
         while (isNotInCollision(p, grid.current)) {
           piece.current.move(p);
-          p = moves[KEY.DOWN](piece.current);
+          p = moves[KEY.S](piece.current);
         }
       }
       else if (isNotInCollision(p, grid.current)) {
