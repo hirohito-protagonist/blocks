@@ -186,14 +186,18 @@ const Board = ({ onGameInformation }) => {
       setGameStarted(false);
     } else if (moves[event.keyCode]) {
       let p = moves[event.keyCode](piece.current);
-      if (event.keyCode === KEY.L) {
+      if (event.keyCode === KEY.W) {
         while (isNotInCollision(p, grid.current)) {
+          gameInformation.current.score += POINTS.HARD_DROP;
           piece.current.move(p);
           p = moves[KEY.S](piece.current);
         }
       }
       else if (isNotInCollision(p, grid.current)) {
         piece.current.move(p);
+        if (event.keyCode === KEY.S) {
+          gameInformation.current.score += POINTS.SOFT_DROP;
+        }
       }
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       drawBoard(ctx, grid.current);
