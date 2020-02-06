@@ -57,5 +57,30 @@ describe('isNotInCollision', () => {
     expect(result).toEqual(false);
   });
 
-  it('should return false when piece touch other pieces', () => {});
+  it('should return false when piece touch other pieces', () => {
+
+    // Given
+    const piece: IPiece = {
+      color: '',
+      shape: [
+        [0, 1, 0],
+        [1, 1, 1],
+        [0, 0, 0]
+      ],
+      x: 1,
+      y: 2
+    };
+    const board: number[][] = [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 1, 0, 1, 1, 0],
+      [1, 1, 1, 1, 1, 1, 1]
+    ];
+
+    // When
+    const result = isNotInCollision(piece, board);
+
+    // Then
+    expect(result).toEqual(false);
+  });
 });
