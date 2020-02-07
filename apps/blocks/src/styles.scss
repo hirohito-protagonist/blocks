@@ -19,3 +19,17 @@ button {
 .app {
     text-align: center;
 }
+
+.c-game-information {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  p {
+    text-align: center;
+    display: inline-block;
+    padding: 1em;
+    font-size: 2em;
+  }
+}

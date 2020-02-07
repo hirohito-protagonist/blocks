@@ -15,7 +15,7 @@ export const App = () => {
   return (
     <div className="app">
       <Board onGameInformation={handleGameInformation} />
-      <GameInformation information={info} />
+      <GameInformation className="c-game-information" information={info} />
     </div>
   );
 };
