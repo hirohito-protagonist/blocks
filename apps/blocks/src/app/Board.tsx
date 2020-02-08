@@ -88,8 +88,8 @@ const moves = {
   [KEY.A]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1 }),
   [KEY.D]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1 }),
   [KEY.S]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.L]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.W]: (p: IPiece): IPiece => rotate(p)
+  [KEY.W]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
+  [KEY.L]: (p: IPiece): IPiece => rotate(p)
 };
 
 const getLinesClearedPoints = (lines: number, level: number): number => {

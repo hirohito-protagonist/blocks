@@ -45,8 +45,8 @@ export class KEY {
   static readonly A = 65;
   static readonly D = 68;
   static readonly S = 83;
-  static readonly W = 76;
-  static readonly L = 87;
+  static readonly W = 87;
+  static readonly L = 76;
   static readonly ESC = 27;
 }
 
