@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-export default function GameInformation({ information, className }) {
+interface GameInformationProps {
+  information: {
+    score: number;
+    lines: number;
+    level: number;
+  };
+  className: string;
+}
+
+export const GameInformation: FC<GameInformationProps> = ({ information, className }) => {
 
   return (
     <div className={className}>
