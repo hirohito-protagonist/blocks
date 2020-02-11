@@ -1,4 +1,4 @@
-import React, { useEffect, createRef, useRef, MutableRefObject, useState } from 'react';
+import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece, IPiece } from './piece';
 import { isNotInCollision } from './collision';
@@ -107,7 +107,11 @@ const getLinesClearedPoints = (lines: number, level: number): number => {
   return (level + 1) * lineClearPoints;
 };
 
-const Board = ({ onGameInformation }) => {
+interface BoardProps {
+  onGameInformation: (information: { score: number; lines: number; level: number; }) => void;
+}
+
+export const Board: FC<BoardProps> = ({ onGameInformation }) => {
 
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
@@ -250,5 +254,3 @@ const Board = ({ onGameInformation }) => {
     </>
   );
 };
-
-export default Board;
