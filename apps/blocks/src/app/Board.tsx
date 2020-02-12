@@ -1,8 +1,9 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
-import { Piece, IPiece } from './piece';
+import { Piece } from './piece';
 import { isNotInCollision } from './collision';
 import { rotate } from './rotate';
+import { PieceType, GameInformationType } from './types';
 
 const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
 
@@ -85,11 +86,11 @@ const useGameLoop = (callback, deps = []) => {
 };
 
 const moves = {
-  [KEY.A]: (p: IPiece): IPiece => ({ ...p, x: p.x - 1 }),
-  [KEY.D]: (p: IPiece): IPiece => ({ ...p, x: p.x + 1 }),
-  [KEY.S]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.W]: (p: IPiece): IPiece => ({ ...p, y: p.y + 1 }),
-  [KEY.L]: (p: IPiece): IPiece => rotate(p)
+  [KEY.A]: (p: PieceType): PieceType => ({ ...p, x: p.x - 1 }),
+  [KEY.D]: (p: PieceType): PieceType => ({ ...p, x: p.x + 1 }),
+  [KEY.S]: (p: PieceType): PieceType => ({ ...p, y: p.y + 1 }),
+  [KEY.W]: (p: PieceType): PieceType => ({ ...p, y: p.y + 1 }),
+  [KEY.L]: (p: PieceType): PieceType => rotate(p)
 };
 
 const getLinesClearedPoints = (lines: number, level: number): number => {
@@ -108,14 +109,14 @@ const getLinesClearedPoints = (lines: number, level: number): number => {
 };
 
 interface BoardProps {
-  onGameInformation: (information: { score: number; lines: number; level: number; }) => void;
+  onGameInformation: (information: GameInformationType) => void;
 }
 
 export const Board: FC<BoardProps> = ({ onGameInformation }) => {
 
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
-  const gameInformation = useRef({ score: 0, level: 0, lines: 0 });
+  const gameInformation = useRef<GameInformationType>({ score: 0, level: 0, lines: 0 });
   const grid = useRef(createEmptyBoard());
   const time = useRef({ start: 0, elapsed: 0, level: LEVEL[0] });
   const piece = useRef<Piece>();

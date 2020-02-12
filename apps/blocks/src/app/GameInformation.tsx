@@ -1,11 +1,8 @@
 import React, { FC } from 'react';
+import { GameInformationType } from './types';
 
 interface GameInformationProps {
-  information: {
-    score: number;
-    lines: number;
-    level: number;
-  };
+  information: GameInformationType;
   className: string;
 }
 

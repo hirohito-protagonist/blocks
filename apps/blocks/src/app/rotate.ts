@@ -1,7 +1,7 @@
-import { IPiece } from './piece';
+import { PieceType } from './types';
 
-export const rotate = (piece: IPiece): IPiece => {
-  let p: IPiece = JSON.parse(JSON.stringify(piece));
+export const rotate = (piece: PieceType): PieceType => {
+  let p: PieceType = JSON.parse(JSON.stringify(piece));
   for (let y = 0; y < p.shape.length; ++y) {
     for (let x = 0; x < y; ++x) {
       [p.shape[x][y], p.shape[y][x]] = [p.shape[y][x], p.shape[x][y]];

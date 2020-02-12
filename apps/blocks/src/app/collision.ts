@@ -1,11 +1,11 @@
-import { IPiece } from './piece';
+import { PieceType } from './types';
 
 const isEmpty = (value: number): boolean => value === 0;
 const insideWalls = (x: number, columns: number): boolean => x >= 0 && x < columns;
 const aboveFloor = (y: number, rows: number): boolean => y <= rows;
 const notOccupied = (board: number[][], x: number, y: number): boolean => board[y] && board[y][x] === 0;
 
-export const isNotInCollision = (p: IPiece, board: number[][]): boolean => {
+export const isNotInCollision = (p: PieceType, board: number[][]): boolean => {
 
   const rows = board.length;
   const columns = board[0].length
