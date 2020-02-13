@@ -1,4 +1,4 @@
-import { PieceType } from './types';
+import { PieceType } from '../common/types';
 
 export const rotate = (piece: PieceType): PieceType => {
   let p: PieceType = JSON.parse(JSON.stringify(piece));

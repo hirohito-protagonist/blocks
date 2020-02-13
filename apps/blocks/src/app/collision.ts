@@ -1,4 +1,4 @@
-import { PieceType } from './types';
+import { PieceType } from '../common/types';
 
 const isEmpty = (value: number): boolean => value === 0;
 const insideWalls = (x: number, columns: number): boolean => x >= 0 && x < columns;

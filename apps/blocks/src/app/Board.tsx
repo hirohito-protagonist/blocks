@@ -3,7 +3,7 @@ import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece } from './piece';
 import { isNotInCollision } from './collision';
 import { rotate } from './rotate';
-import { PieceType, GameInformationType } from './types';
+import { PieceType, GameInformationType } from '../common/types';
 
 const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
 
