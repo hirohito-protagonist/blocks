@@ -51,7 +51,7 @@ const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
   ctx.canvas.width = COLUMNS * BLOCK_SIZE;
   ctx.canvas.height = ROWS * BLOCK_SIZE;
   ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-  board.forEach((row: any[], y) => {
+  board.forEach((row: number[], y) => {
     row.forEach((value, x) => {
       if (value > 0) {
         ctx.fillStyle = '#711673';
@@ -70,7 +70,7 @@ const gameOver = (ctx: CanvasRenderingContext2D): void => {
   ctx.fillText('GAME OVER', 1.8, 4);
 };
 
-const useGameLoop = (callback, deps = []) => {
+const useGameLoop = (callback: (t: number) => void, deps: any[] = []) => {
 
   const requestRef = useRef<number>();
 
@@ -130,7 +130,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   };
 
   const drop = (p: MutableRefObject<Piece>): boolean => {
-    let newPiece = moves[KEY.S](p.current);
+    const newPiece = moves[KEY.S](p.current);
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {

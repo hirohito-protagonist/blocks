@@ -8,7 +8,7 @@ const notOccupied = (board: number[][], x: number, y: number): boolean => board[
 export const isNotInCollision = (p: PieceType, board: number[][]): boolean => {
 
   const rows = board.length;
-  const columns = board[0].length
+  const columns = board[0].length;
   return p.shape.every((row, dy) => {
     return row.every((value, dx) => {
       const x = p.x + dx;
