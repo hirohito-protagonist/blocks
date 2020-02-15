@@ -3,6 +3,7 @@ import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece } from './piece';
 import { isNotInCollision } from '../common/collision';
 import { rotate } from '../common/rotate';
+import { useGameLoop } from '../common/hooks';
 import { PieceType, GameInformationType } from '../common/types';
 
 const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
@@ -70,20 +71,6 @@ const gameOver = (ctx: CanvasRenderingContext2D): void => {
   ctx.fillText('GAME OVER', 1.8, 4);
 };
 
-const useGameLoop = (callback: (t: number) => void, deps: any[] = []) => {
-
-  const requestRef = useRef<number>();
-
-  const animate = (time) => {
-    callback(time);
-    requestRef.current = requestAnimationFrame(animate);
-  };
-
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(requestRef.current);
-  }, deps);
-};
 
 const moves = {
   [KEY.A]: (p: PieceType): PieceType => ({ ...p, x: p.x - 1 }),
