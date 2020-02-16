@@ -1,11 +1,11 @@
-import { IPiece } from './piece';
+import { PieceType } from './types';
 import { rotate } from './rotate';
 describe('rotate', () => {
 
   it('should transpose a Piece shape', () => {
 
     // Given
-    const piece: IPiece = {
+    const piece: PieceType = {
       color: '',
       shape: [
         [0, 1, 0],

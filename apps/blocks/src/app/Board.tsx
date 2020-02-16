@@ -2,7 +2,7 @@ import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react'
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece } from './piece';
 import { isNotInCollision } from './collision';
-import { rotate } from './rotate';
+import { rotate } from '../common/rotate';
 import { PieceType, GameInformationType } from '../common/types';
 
 const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
