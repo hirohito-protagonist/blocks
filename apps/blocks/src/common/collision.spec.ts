@@ -1,4 +1,4 @@
-import { IPiece } from './piece';
+import { PieceType } from './types';
 import { isNotInCollision } from './collision';
 
 describe('isNotInCollision', () => {
@@ -6,7 +6,7 @@ describe('isNotInCollision', () => {
   it('should return true when piece is in board and touch anything', () => {
 
     // Given
-    const piece: IPiece = {
+    const piece: PieceType = {
       color: '',
       shape: [
         [0, 1, 0],
@@ -33,7 +33,7 @@ describe('isNotInCollision', () => {
   it('should return false when piece is touch wall', () => {
 
     // Given
-    const piece: IPiece = {
+    const piece: PieceType = {
       color: '',
       shape: [
         [0, 1, 0],
@@ -60,7 +60,7 @@ describe('isNotInCollision', () => {
   it('should return false when piece touch other pieces', () => {
 
     // Given
-    const piece: IPiece = {
+    const piece: PieceType = {
       color: '',
       shape: [
         [0, 1, 0],

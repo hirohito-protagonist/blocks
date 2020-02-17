@@ -1,7 +1,7 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
 import { Piece } from './piece';
-import { isNotInCollision } from './collision';
+import { isNotInCollision } from '../common/collision';
 import { rotate } from '../common/rotate';
 import { PieceType, GameInformationType } from '../common/types';
 
