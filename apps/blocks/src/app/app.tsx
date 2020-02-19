@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Board } from './Board';
+import { Board } from '../features/game-board';
 import { GameInformation } from '../features/game-information';
 
 import './app.scss';

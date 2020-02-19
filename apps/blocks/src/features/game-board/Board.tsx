@@ -1,10 +1,10 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from './constants';
-import { Piece } from './piece';
-import { isNotInCollision } from '../common/collision';
-import { rotate } from '../common/rotate';
-import { useGameLoop } from '../common/hooks';
-import { PieceType, GameInformationType } from '../common/types';
+import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../app/constants';
+import { Piece } from '../../app/piece';
+import { isNotInCollision } from '../../common/collision';
+import { rotate } from '../../common/rotate';
+import { useGameLoop } from '../../common/hooks';
+import { PieceType, GameInformationType } from '../../common/types';
 
 const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
 
