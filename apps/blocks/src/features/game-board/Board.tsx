@@ -1,5 +1,5 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../app/constants';
+import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../common/constants';
 import { Piece } from '../../app/piece';
 import { isNotInCollision } from '../../common/collision';
 import { rotate } from '../../common/rotate';
