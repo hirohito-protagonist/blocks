@@ -1,5 +1,5 @@
-import { SHAPES } from '../common/constants';
-import { PieceType } from '../common/types';
+import { SHAPES } from '../../common/constants';
+import { PieceType } from '../../common/types';
 
 
 export class Piece implements PieceType {

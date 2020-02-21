@@ -1,6 +1,6 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../common/constants';
-import { Piece } from '../../app/piece';
+import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
 import { rotate } from '../../common/rotate';
 import { useGameLoop } from '../../common/hooks';
