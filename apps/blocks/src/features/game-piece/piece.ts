@@ -1,4 +1,4 @@
-import { SHAPES } from '../../common/constants';
+import { SHAPES } from './shapes';
 import { PieceType } from '../../common/types';
 
 
