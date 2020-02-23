@@ -5,48 +5,7 @@ import { isNotInCollision } from '../../common/collision';
 import { rotate } from '../../common/rotate';
 import { useGameLoop } from '../../common/hooks';
 import { PieceType, GameInformationType } from '../../common/types';
-
-const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
-
-const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
-  const g = [...board];
-  p.current.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value > 0) {
-        g[y + p.current.y][x + p.current.x] = value;
-      }
-    });
-  });
-  return g;
-};
-
-const addOutlines = (ctx: CanvasRenderingContext2D) => {
-  for (let i = 0; i < COLUMNS; i++) {
-    ctx.fillStyle = '#511159';
-    ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
-  }
-  for (let i = 0; i < ROWS; i++) {
-    ctx.fillStyle = '#511159';
-    ctx.fillRect(0, i, ctx.canvas.width, 0.025);
-  }
-};
-
-const clearLines = (board: number[][]): { board: number[][]; clearedLines: number; } => {
-
-  let lines = 0;
-  const g = [...board];
-  g.forEach((row, y) => {
-    if (row.every(value => value !== 0)) {
-      lines++;
-      g.splice(y, 1);
-      g.unshift(Array(COLUMNS).fill(0));
-    }
-  });
-  return {
-    board: g,
-    clearedLines: lines
-  };
-};
+import { freeze, addOutlines, clearLines, createEmptyBoard } from './util';
 
 const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
   ctx.canvas.width = COLUMNS * BLOCK_SIZE;
