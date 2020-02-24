@@ -2,10 +2,10 @@ import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react'
 import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../common/constants';
 import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
-import { rotate } from '../../common/rotate';
 import { useGameLoop } from '../../common/hooks';
-import { PieceType, GameInformationType } from '../../common/types';
+import { GameInformationType } from '../../common/types';
 import { freeze, addOutlines, clearLines, createEmptyBoard } from './util';
+import { moves } from './keyboard';
 
 const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
   ctx.canvas.width = COLUMNS * BLOCK_SIZE;
@@ -31,13 +31,7 @@ const gameOver = (ctx: CanvasRenderingContext2D): void => {
 };
 
 
-const moves = {
-  [KEY.A]: (p: PieceType): PieceType => ({ ...p, x: p.x - 1 }),
-  [KEY.D]: (p: PieceType): PieceType => ({ ...p, x: p.x + 1 }),
-  [KEY.S]: (p: PieceType): PieceType => ({ ...p, y: p.y + 1 }),
-  [KEY.W]: (p: PieceType): PieceType => ({ ...p, y: p.y + 1 }),
-  [KEY.L]: (p: PieceType): PieceType => rotate(p)
-};
+
 
 const getLinesClearedPoints = (lines: number, level: number): number => {
   const lineClearPoints =
