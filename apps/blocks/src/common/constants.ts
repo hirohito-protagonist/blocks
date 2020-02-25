@@ -3,14 +3,7 @@ export const ROWS = 20;
 export const BLOCK_SIZE = 30;
 
 
-export class KEY {
-  static readonly A = 65;
-  static readonly D = 68;
-  static readonly S = 83;
-  static readonly W = 87;
-  static readonly L = 76;
-  static readonly ESC = 27;
-}
+
 
 export class LEVEL {
   static readonly 0 = 800;

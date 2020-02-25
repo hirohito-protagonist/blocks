@@ -1,11 +1,11 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, KEY, LEVEL, POINTS } from '../../common/constants';
+import { COLUMNS, ROWS, BLOCK_SIZE, LEVEL, POINTS } from '../../common/constants';
 import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
 import { useGameLoop } from '../../common/hooks';
 import { GameInformationType } from '../../common/types';
 import { freeze, addOutlines, clearLines, createEmptyBoard } from './util';
-import { moves } from './keyboard';
+import { moves, KEY } from './keyboard';
 
 const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
   ctx.canvas.width = COLUMNS * BLOCK_SIZE;
