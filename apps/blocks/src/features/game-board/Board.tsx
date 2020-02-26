@@ -1,37 +1,12 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { COLUMNS, ROWS, BLOCK_SIZE, LEVEL, POINTS } from '../../common/constants';
+import { LEVEL, POINTS } from '../../common/constants';
 import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
 import { useGameLoop } from '../../common/hooks';
 import { GameInformationType } from '../../common/types';
-import { freeze, addOutlines, clearLines, createEmptyBoard } from './util';
+import { freeze, clearLines, createEmptyBoard } from './util';
 import { moves, KEY } from './keyboard';
-
-const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
-  ctx.canvas.width = COLUMNS * BLOCK_SIZE;
-  ctx.canvas.height = ROWS * BLOCK_SIZE;
-  ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-  board.forEach((row: number[], y) => {
-    row.forEach((value, x) => {
-      if (value > 0) {
-        ctx.fillStyle = '#711673';
-        ctx.fillRect(x, y, 1, 1);
-      }
-    });
-  });
-  addOutlines(ctx);
-};
-
-const gameOver = (ctx: CanvasRenderingContext2D): void => {
-  ctx.fillStyle = '#711673';
-  ctx.fillRect(1, 3, 8, 1.2);
-  ctx.font = '1px Arial';
-  ctx.fillStyle = 'white';
-  ctx.fillText('GAME OVER', 1.8, 4);
-};
-
-
-
+import { drawBoard, gameOver } from './render';
 
 const getLinesClearedPoints = (lines: number, level: number): number => {
   const lineClearPoints =
