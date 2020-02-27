@@ -7,21 +7,8 @@ import { GameInformationType } from '../../common/types';
 import { freeze, clearLines, createEmptyBoard } from './util';
 import { moves, KEY } from './keyboard';
 import { drawBoard, gameOver } from './render';
+import { getLinesClearedPoints } from './points';
 
-const getLinesClearedPoints = (lines: number, level: number): number => {
-  const lineClearPoints =
-    lines === 1
-      ? POINTS.SINGLE
-      : lines === 2
-        ? POINTS.DOUBLE
-        : lines === 3
-          ? POINTS.TRIPLE
-          : lines === 4
-            ? POINTS.TETRIS
-            : 0;
-
-  return (level + 1) * lineClearPoints;
-};
 
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;

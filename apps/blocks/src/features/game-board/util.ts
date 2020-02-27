@@ -1,5 +1,5 @@
 import { Piece } from '../game-piece';
-import  { MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
 import { COLUMNS, ROWS } from '../../common/constants';
 
 export const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
