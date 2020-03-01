@@ -27,5 +27,17 @@ describe('points', () => {
       // Then
       expect(result).toEqual(100);
     });
+
+    it('should calculate for double lines', () => {
+      // Given
+      const lines = 2;
+      const level = 0;
+
+      // When
+      const result = getLinesClearedPoints(lines, level);
+
+      // Then
+      expect(result).toEqual(300);
+    });
   });
 });
