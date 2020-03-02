@@ -39,5 +39,17 @@ describe('points', () => {
       // Then
       expect(result).toEqual(300);
     });
+
+    it('should calculate for triple lines', () => {
+      // Given
+      const lines = 3;
+      const level = 0;
+
+      // When
+      const result = getLinesClearedPoints(lines, level);
+
+      // Then
+      expect(result).toEqual(500);
+    });
   });
 });
