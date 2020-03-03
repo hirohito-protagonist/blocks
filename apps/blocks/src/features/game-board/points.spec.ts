@@ -51,5 +51,17 @@ describe('points', () => {
       // Then
       expect(result).toEqual(500);
     });
+
+    it('should calculate for tetris', () => {
+      // Given
+      const lines = 4;
+      const level = 0;
+
+      // When
+      const result = getLinesClearedPoints(lines, level);
+
+      // Then
+      expect(result).toEqual(800);
+    });
   });
 });
