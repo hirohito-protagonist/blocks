@@ -63,5 +63,17 @@ describe('points', () => {
       // Then
       expect(result).toEqual(800);
     });
+
+    it('should calculate point with consideration of level', () => {
+      // Given
+      const lines = 4;
+      const level = 10;
+
+      // When
+      const result = getLinesClearedPoints(lines, level);
+
+      // Then
+      expect(result).toEqual(8800);
+    });
   });
 });
