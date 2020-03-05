@@ -1,5 +1,5 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { LEVEL, POINTS } from '../../common/constants';
+import { LEVEL } from '../../common/constants';
 import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
 import { useGameLoop } from '../../common/hooks';
@@ -7,7 +7,7 @@ import { GameInformationType } from '../../common/types';
 import { freeze, clearLines, createEmptyBoard } from './util';
 import { moves, KEY } from './keyboard';
 import { drawBoard, gameOver } from './render';
-import { getLinesClearedPoints } from './points';
+import { getLinesClearedPoints, POINTS } from './points';
 
 
 interface BoardProps {
