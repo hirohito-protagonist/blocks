@@ -15,6 +15,15 @@ Run `npm run build` to build the project. The build artifacts will be stored in 
 
 Run `npm t` to execute the unit tests via [Jest](https://jestjs.io/).
 
+# How to play
+Move the block around using the keyboard. .
+* <kbd>a</kbd> - move left
+* <kbd>d</kbd> - move right
+* <kbd>s</kbd> - move down / soft drop 
+* <kbd>w</kbd> - hard drop
+* <kbd>l</kbd> - rotate
+* <kbd>esc</kbd> - game over
+
 
 
 # License
