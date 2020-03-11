@@ -1,5 +1,5 @@
 import React, { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { LEVEL } from '../../common/constants';
+import { LEVEL } from './config';
 import { Piece } from '../game-piece';
 import { isNotInCollision } from '../../common/collision';
 import { useGameLoop } from '../../common/hooks';
