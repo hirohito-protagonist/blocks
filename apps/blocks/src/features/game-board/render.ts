@@ -1,4 +1,4 @@
-import { COLUMNS, ROWS, BLOCK_SIZE } from '../../common/constants';
+import { COLUMNS, ROWS, BLOCK_SIZE } from './config';
 import { addOutlines } from './util';
 
 export const drawBoard = (ctx: CanvasRenderingContext2D, board: number[][]): void => {
