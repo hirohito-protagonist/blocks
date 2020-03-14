@@ -1,5 +1,6 @@
 # Blocks
 Kind of tetris game
+![](/docs/screenshots/app.png)
 
 # Getting started
 
