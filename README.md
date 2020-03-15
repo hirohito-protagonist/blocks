@@ -1,7 +1,8 @@
 # Blocks
 Kind of tetris game
-![](/docs/screenshots/app.png)
-
+<p align="center">
+  <img src="./docs/screenshots/app.png" alt="">
+</p>
 # Getting started
 
 ## Development server
