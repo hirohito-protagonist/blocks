@@ -1,8 +1,10 @@
 # Blocks
 Kind of tetris game
+
 <p align="center">
-  <img src="./docs/screenshots/app.png" alt="">
+  <img src="./docs/screenshots/app.png" alt="" width="400">
 </p>
+
 # Getting started
 
 ## Development server
