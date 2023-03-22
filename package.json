@@ -43,7 +43,7 @@
     "@nrwl/jest": "15.8.7",
     "jest": "24.1.0",
     "@types/jest": "24.0.9",
-    "ts-jest": "24.0.0",
+    "ts-jest": "29.0.5",
     "cypress": "12.8.1",
     "@nrwl/cypress": "15.8.7",
     "@nrwl/web": "15.8.7",
