@@ -41,7 +41,7 @@
     "prettier": "1.18.2",
     "@nrwl/react": "15.8.7",
     "@nrwl/jest": "15.8.7",
-    "jest": "24.1.0",
+    "jest": "29.5.0",
     "@types/jest": "24.0.9",
     "ts-jest": "29.0.5",
     "cypress": "12.8.1",
