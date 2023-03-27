@@ -1,4 +1,4 @@
-import { GameInformationType } from '../../common/types';
+import { GameInformationType } from '../../common';
 
 interface GameInformationProps {
   information: GameInformationType;

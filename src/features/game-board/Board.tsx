@@ -1,9 +1,7 @@
 import { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
+import { isNotInCollision, useGameLoop, GameInformationType } from '../../common';
 import { LEVEL } from './config';
 import { Piece } from '../game-piece';
-import { isNotInCollision } from '../../common/collision';
-import { useGameLoop } from '../../common/hooks';
-import { GameInformationType } from '../../common/types';
 import { freeze, clearLines, createEmptyBoard } from './util';
 import { moves, KEY } from './keyboard';
 import { drawBoard, gameOver } from './render';

@@ -1,5 +1,4 @@
-import { PieceType } from '../../common/types';
-import { rotate } from '../../common/rotate';
+import { rotate, PieceType } from '../../common';
 
 export class KEY {
   static readonly A = 65;
