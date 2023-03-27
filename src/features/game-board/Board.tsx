@@ -18,8 +18,8 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   const counters = useRef({ lines: 0 });
   const gameInformation = useRef<GameInformationType>({ score: 0, level: 0, lines: 0 });
   const grid = useRef(createEmptyBoard());
-  const time = useRef({ start: 0, elapsed: 0, level: LEVEL[0] });
-  const piece = useRef<Piece>();
+  const time = useRef({ start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) });
+  const piece = useRef<Piece>(null);
 
 
   const canvasCntext = useRef<HTMLCanvasElement>(null);
@@ -43,7 +43,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
         if (counters.current.lines >= 5) {
           const lvl = gameInformation.current.level < 10 ? gameInformation.current.level + 1 : gameInformation.current.level;
           counters.current.lines -= 5;
-          time.current.level = LEVEL[lvl];
+          time.current.level = LEVEL.timeForLevel(lvl);
           gameInformation.current.level = lvl;
         }
         gameInformation.current.lines += clearedLines;
@@ -62,7 +62,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
 
   const resetState = () => {
     grid.current = createEmptyBoard();
-    time.current = { start: 0, elapsed: 0, level: LEVEL[0] };
+    time.current = { start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) };
     gameInformation.current = { level: 0, score: 0, lines: 0 };
   };
 
@@ -94,7 +94,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
       if (event.keyCode === KEY.W) {
         while (isNotInCollision(p, grid.current)) {
           gameInformation.current.score += POINTS.HARD_DROP;
-          piece.current.move(p);
+          piece!.current!.move(p);
           p = moves[KEY.S](piece.current);
         }
       }
@@ -134,7 +134,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
           setGameStarted(false);
           gameOver(ctx);
           grid.current = createEmptyBoard();
-          time.current = { start: 0, elapsed: 0, level: LEVEL[gameInformation.current.level] };
+          time.current = { start: 0, elapsed: 0, level: LEVEL.timeForLevel(gameInformation.current.level) };
           return;
         }
       }
