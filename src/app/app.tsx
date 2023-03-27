@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Board } from '../features/game-board';
 import { GameInformation } from '../features/game-information';
-
+import { GameInformationType } from '../common';
 import './app.module.scss';
 
 export const App = () => {
 
-  const [info, setInfo] = useState({ score: 0, level: 0, lines: 0 });
+  const [info, setInfo] = useState<GameInformationType>({ score: 0, level: 0, lines: 0 });
 
-  const handleGameInformation = (inf) => {
+  const handleGameInformation = (inf: GameInformationType) => {
     setInfo({ ...inf });
   };
 

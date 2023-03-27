@@ -1,11 +1,9 @@
 import { GameInformationType } from '../../common';
 
-interface GameInformationProps {
+export const GameInformation = ({ information, className }: {
   information: GameInformationType;
   className: string;
-}
-
-export const GameInformation = ({ information, className }: GameInformationProps) => {
+}) => {
 
   return (
     <div className={className}>

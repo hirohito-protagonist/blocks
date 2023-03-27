@@ -13,4 +13,22 @@ export class LEVEL {
   static readonly 8 = 130;
   static readonly 9 = 100;
   static readonly 10 = 80;
+  static timeForLevel(level: number): number {
+    switch (level) {
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+      case 10: {
+        return LEVEL[level];
+      }
+      default:
+        return LEVEL[0];
+    }
+  }
 }
