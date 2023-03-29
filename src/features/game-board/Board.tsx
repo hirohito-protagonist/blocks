@@ -1,26 +1,38 @@
 import { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
-import { isNotInCollision, useGameLoop, GameInformationType } from '../../common';
+import {
+  isNotInCollision,
+  useGameLoop,
+  useKeyboard,
+  GameInformationType,
+  rotate,
+} from '../../common';
 import { LEVEL } from './config';
 import { Piece } from '../game-piece';
 import { freeze, clearLines, createEmptyBoard } from './util';
-import { moves, KEY } from './keyboard';
 import { drawBoard, gameOver } from './render';
 import { getLinesClearedPoints, POINTS } from './points';
-
 
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;
 }
 
 export const Board: FC<BoardProps> = ({ onGameInformation }) => {
-
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
-  const gameInformation = useRef<GameInformationType>({ score: 0, level: 0, lines: 0 });
+  const gameInformation = useRef<GameInformationType>({
+    score: 0,
+    level: 0,
+    lines: 0,
+  });
   const grid = useRef(createEmptyBoard());
   const time = useRef({ start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) });
   const piece = useRef<Piece>(null);
-
+  const escapeKey = useKeyboard('Escape');
+  const aKey = useKeyboard('a');
+  const wKey = useKeyboard('w');
+  const sKey = useKeyboard('s');
+  const dKey = useKeyboard('d');
+  const lKey = useKeyboard('l');
 
   const canvasCntext = useRef<HTMLCanvasElement>(null);
 
@@ -30,18 +42,23 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   };
 
   const drop = (p: MutableRefObject<Piece>): boolean => {
-    const newPiece = moves[KEY.S](p.current);
+    const newPiece = rotate(p.current);
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {
       const { board, clearedLines } = clearLines(freeze(p, grid.current));
       grid.current = board;
       if (clearedLines > 0) {
-
-        const points = getLinesClearedPoints(clearedLines, gameInformation.current.level);
+        const points = getLinesClearedPoints(
+          clearedLines,
+          gameInformation.current.level
+        );
         counters.current.lines += clearedLines;
         if (counters.current.lines >= 5) {
-          const lvl = gameInformation.current.level < 10 ? gameInformation.current.level + 1 : gameInformation.current.level;
+          const lvl =
+            gameInformation.current.level < 10
+              ? gameInformation.current.level + 1
+              : gameInformation.current.level;
           counters.current.lines -= 5;
           time.current.level = LEVEL.timeForLevel(lvl);
           gameInformation.current.level = lvl;
@@ -84,23 +101,65 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
     gameOver(ctx);
   };
 
-  const keyEvent = (event: KeyboardEvent) => {
+  useEffect(() => {
     const ctx = getContext();
-    if (event.keyCode === KEY.ESC) {
+    drawBoard(ctx, grid.current);
+    piece.current = null;
+  }, []);
+
+  useGameLoop(
+    (now) => {
+      if (isGameStarted) {
+        const ctx = getContext();
+        time.current.elapsed = now - time.current.start;
+        if (time.current.elapsed > time.current.level) {
+          time.current.start = now;
+          if (!drop(piece)) {
+            setGameStarted(false);
+            gameOver(ctx);
+            grid.current = createEmptyBoard();
+            time.current = {
+              start: 0,
+              elapsed: 0,
+              level: LEVEL.timeForLevel(gameInformation.current.level),
+            };
+            return;
+          }
+        }
+        drawBoard(ctx, grid.current);
+        piece.current.draw();
+      }
+    },
+    [isGameStarted]
+  );
+
+  useEffect(() => {
+    const ctx = getContext();
+    if (escapeKey) {
       gameOver(ctx);
       setGameStarted(false);
-    } else if (moves[event.keyCode]) {
-      let p = moves[event.keyCode](piece.current);
-      if (event.keyCode === KEY.W) {
+    } else if (piece.current !== null) {
+      console.log('rum');
+      let p = lKey
+        ? rotate(piece.current)
+        : {
+            ...piece.current,
+            x: aKey
+              ? piece.current.x - 1
+              : dKey
+              ? piece.current.x + 1
+              : piece.current.x,
+            y: sKey || wKey ? piece.current.y + 1 : piece.current.y,
+          };
+      if (wKey) {
         while (isNotInCollision(p, grid.current)) {
           gameInformation.current.score += POINTS.HARD_DROP;
           piece!.current!.move(p);
-          p = moves[KEY.S](piece.current);
+          p = { ...piece.current, y: piece.current.y + 1 };
         }
-      }
-      else if (isNotInCollision(p, grid.current)) {
+      } else if (isNotInCollision(p, grid.current)) {
         piece.current.move(p);
-        if (event.keyCode === KEY.S) {
+        if (sKey) {
           gameInformation.current.score += POINTS.SOFT_DROP;
         }
       }
@@ -108,50 +167,20 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
       drawBoard(ctx, grid.current);
       piece.current.draw();
     }
-  };
-
-  useEffect(() => {
-    const ctx = getContext();
-    drawBoard(ctx, grid.current);
-    piece.current = null;
-  }, []);
-
-  useEffect(() => {
-
-    document.addEventListener('keydown', keyEvent);
-    return () => {
-      document.removeEventListener('keydown', keyEvent);
-    };
-  }, [isGameStarted]);
-
-  useGameLoop((now) => {
-    if (isGameStarted) {
-      const ctx = getContext();
-      time.current.elapsed = now - time.current.start;
-      if (time.current.elapsed > time.current.level) {
-        time.current.start = now;
-        if (!drop(piece)) {
-          setGameStarted(false);
-          gameOver(ctx);
-          grid.current = createEmptyBoard();
-          time.current = { start: 0, elapsed: 0, level: LEVEL.timeForLevel(gameInformation.current.level) };
-          return;
-        }
-      }
-      drawBoard(ctx, grid.current);
-      piece.current.draw();
-    }
-
-  }, [isGameStarted]);
+  }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
   return (
     <>
       <canvas ref={canvasCntext} className="c-game-board"></canvas>
       {isGameStarted ? (
-        <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>Reset</button>
+        <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>
+          Reset
+        </button>
       ) : (
-          <button onClick={handlePlay} onKeyDown={(e) => e.preventDefault()}>Play</button>
-        )}
+        <button onClick={handlePlay} onKeyDown={(e) => e.preventDefault()}>
+          Play
+        </button>
+      )}
     </>
   );
 };
