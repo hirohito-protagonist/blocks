@@ -22,14 +22,16 @@ export const useGameLoop = (callback: (t: number) => void, deps: any[] = []) => 
 
 export const useKeyboard = (keyTarget: string): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
-  const downHandler = ({ key }: KeyboardEvent) => {
-    if (key === keyTarget) {
+  const downHandler = (e: KeyboardEvent) => {
+    e.preventDefault();
+    if (e.key === keyTarget) {
       setKeyPressed(true);
     }
   }
   
-  const upHandler = ({ key }: KeyboardEvent) => {
-    if (key === keyTarget) {
+  const upHandler = (e: KeyboardEvent) => {
+    e.preventDefault();
+    if (e.key === keyTarget) {
       setKeyPressed(false);
     }
   };

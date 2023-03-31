@@ -46,7 +46,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {
-      const { board, clearedLines } = clearLines(freeze(p, grid.current));
+      const { board, clearedLines } = clearLines(freeze(p.current, grid.current));
       grid.current = board;
       if (clearedLines > 0) {
         const points = getLinesClearedPoints(
@@ -135,37 +135,37 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
 
   useEffect(() => {
     const ctx = getContext();
+    const block = piece.current;
     if (escapeKey) {
       gameOver(ctx);
       setGameStarted(false);
-    } else if (piece.current !== null) {
-      console.log('rum');
+    } else if (block !== null) {
       let p = lKey
-        ? rotate(piece.current)
+        ? rotate(block)
         : {
-            ...piece.current,
+            ...block,
             x: aKey
-              ? piece.current.x - 1
+              ? block.x - 1
               : dKey
-              ? piece.current.x + 1
-              : piece.current.x,
-            y: sKey || wKey ? piece.current.y + 1 : piece.current.y,
+              ? block.x + 1
+              : block.x,
+            y: sKey || wKey ? block.y + 1 : block.y,
           };
       if (wKey) {
         while (isNotInCollision(p, grid.current)) {
           gameInformation.current.score += POINTS.HARD_DROP;
-          piece!.current!.move(p);
-          p = { ...piece.current, y: piece.current.y + 1 };
+          block.move(p);
+          p = { ...block, y: block.y + 1 };
         }
       } else if (isNotInCollision(p, grid.current)) {
-        piece.current.move(p);
+        block.move(p);
         if (sKey) {
           gameInformation.current.score += POINTS.SOFT_DROP;
         }
       }
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       drawBoard(ctx, grid.current);
-      piece.current.draw();
+      block.draw();
     }
   }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
 

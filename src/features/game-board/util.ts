@@ -1,15 +1,14 @@
 import { Piece } from '../game-piece';
-import { MutableRefObject } from 'react';
 import { COLUMNS, ROWS } from './config';
 
 export const createEmptyBoard = () => Array.from({ length: ROWS }, () => Array(COLUMNS).fill(0));
 
-export const freeze = (p: MutableRefObject<Piece>, board: number[][]): number[][] => {
+export const freeze = (p: Piece, board: number[][]): number[][] => {
   const g = [...board];
-  p.current.shape.forEach((row, y) => {
+  p.shape.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value > 0) {
-        g[y + p.current.y][x + p.current.x] = value;
+        g[y + p.y][x + p.x] = value;
       }
     });
   });
