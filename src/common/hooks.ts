@@ -24,6 +24,7 @@ export const useKeyboard = (keyTarget: string): boolean => {
   const [keyPressed, setKeyPressed] = useState(false);
   const downHandler = (e: KeyboardEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (e.key === keyTarget) {
       setKeyPressed(true);
     }
@@ -31,6 +32,7 @@ export const useKeyboard = (keyTarget: string): boolean => {
   
   const upHandler = (e: KeyboardEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (e.key === keyTarget) {
       setKeyPressed(false);
     }

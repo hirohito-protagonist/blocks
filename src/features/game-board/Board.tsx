@@ -42,7 +42,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   };
 
   const drop = (p: MutableRefObject<Piece>): boolean => {
-    const newPiece = rotate(p.current);
+    const newPiece = { ...p.current, y: p.current.y + 1 };
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {
