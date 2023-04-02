@@ -108,30 +108,35 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   }, []);
 
   useGameLoop(
-    (now) => {
+    () => {
       if (isGameStarted) {
         const ctx = getContext();
-        time.current.elapsed = now - time.current.start;
-        if (time.current.elapsed > time.current.level) {
-          time.current.start = now;
-          if (!drop(piece)) {
-            setGameStarted(false);
-            gameOver(ctx);
-            grid.current = createEmptyBoard();
-            time.current = {
-              start: 0,
-              elapsed: 0,
-              level: LEVEL.timeForLevel(gameInformation.current.level),
-            };
-            return;
-          }
-        }
         drawBoard(ctx, grid.current);
         piece.current.draw();
       }
     },
     [isGameStarted]
   );
+
+  useGameLoop((now) => {
+    if (isGameStarted) {
+      const ctx = getContext();
+      time.current.elapsed = now - time.current.start;
+      if (time.current.elapsed > time.current.level) {
+        time.current.start = now;
+        if (!drop(piece)) {
+          setGameStarted(false);
+          gameOver(ctx);
+          grid.current = createEmptyBoard();
+          time.current = {
+            start: 0,
+            elapsed: 0,
+            level: LEVEL.timeForLevel(gameInformation.current.level),
+          };
+        }
+      }
+    }
+  }, [isGameStarted]);
 
   useEffect(() => {
     const ctx = getContext();
