@@ -1,1 +1,1 @@
-export { Piece } from './piece';
+export { Piece, pieceRender } from './piece';

@@ -7,7 +7,7 @@ import {
   rotate,
 } from '../../common';
 import { LEVEL } from './config';
-import { Piece } from '../game-piece';
+import { Piece, pieceRender } from '../game-piece';
 import { freeze, clearLines, createEmptyBoard } from './util';
 import { drawBoard, gameOver } from './render';
 import { getLinesClearedPoints, POINTS } from './points';
@@ -112,7 +112,9 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
       if (isGameStarted) {
         const ctx = getContext();
         drawBoard(ctx, grid.current);
-        piece.current.draw();
+        if (piece.current !== null) {
+          pieceRender(piece.current, ctx);
+        }
       }
     },
     [isGameStarted]
@@ -170,7 +172,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
       }
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       drawBoard(ctx, grid.current);
-      block.draw();
+      pieceRender(block, ctx);
     }
   }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
