@@ -10,6 +10,17 @@ export class GameRenderer {
     private configuration: Configuration
   ) {}
 
+  fillBlocksInBoard(board: number[][]) {
+    board.forEach((row: number[], y) => {
+      row.forEach((value, x) => {
+        if (value > 0) {
+          this.ctx.fillStyle = '#711673';
+          this.ctx.fillRect(x, y, 1, 1);
+        }
+      });
+    });
+  }
+
   gameOver() {
     if (this.ctx !== null) {
       this.ctx.fillStyle = '#711673';

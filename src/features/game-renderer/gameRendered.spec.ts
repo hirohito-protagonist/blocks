@@ -26,4 +26,27 @@ describe('GameRenderer', () => {
     expect(ctx.fillRect).toHaveBeenCalled();
     expect(ctx.fillText).toHaveBeenCalled();
   });
+
+  it('should render block in board', () => {
+    // Given
+    const ctx = createRenderContext();
+    const board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [1, 1, 1, 1],
+    ];
+    const renderer = GameRenderer.forCanvas(ctx as CanvasRenderingContext2D, {
+      width: 0,
+      height: 0,
+      blockSize: 0,
+    });
+
+    // When
+    renderer.fillBlocksInBoard(board);
+
+    // Then
+    expect(ctx.fillRect).toHaveBeenCalledTimes(6);
+  });
 });
