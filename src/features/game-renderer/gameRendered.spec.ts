@@ -50,7 +50,7 @@ describe('GameRenderer', () => {
     expect(ctx.fillText).toHaveBeenCalled();
   });
 
-  it('should render block in board', () => {
+  it('should render board', () => {
     // Given
     const ctx = createRenderContext();
     const board = [
@@ -67,7 +67,7 @@ describe('GameRenderer', () => {
     });
 
     // When
-    renderer.fillBlocksInBoard(board);
+    renderer.drawBoard(board);
 
     // Then
     expect(ctx.fillRect).toHaveBeenCalledTimes(15);

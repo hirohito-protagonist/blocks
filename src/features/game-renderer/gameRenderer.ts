@@ -14,15 +14,8 @@ export class GameRenderer {
     this.ctx.scale(configuration.blockSize, configuration.blockSize);
   }
 
-  fillBlocksInBoard(board: number[][]) {
-    board.forEach((row: number[], y) => {
-      row.forEach((value, x) => {
-        if (value > 0) {
-          this.ctx.fillStyle = '#711673';
-          this.ctx.fillRect(x, y, 1, 1);
-        }
-      });
-    });
+  drawBoard(board: number[][]) {
+    this.fillBlocksInBoard(board);
     this.addOutlinesToBoard(board);
   }
 
@@ -32,6 +25,17 @@ export class GameRenderer {
     this.ctx.font = '1px Arial';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText('GAME OVER', 1.8, 4);
+  }
+
+  private fillBlocksInBoard(board: number[][]) {
+    board.forEach((row: number[], y) => {
+      row.forEach((value, x) => {
+        if (value > 0) {
+          this.ctx.fillStyle = '#711673';
+          this.ctx.fillRect(x, y, 1, 1);
+        }
+      });
+    });
   }
 
   private addOutlinesToBoard(board: number[][]) {
