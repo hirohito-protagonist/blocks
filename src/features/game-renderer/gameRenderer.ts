@@ -23,6 +23,7 @@ export class GameRenderer {
         }
       });
     });
+    this.addOutlinesToBoard(board);
   }
 
   gameOver() {
@@ -31,6 +32,19 @@ export class GameRenderer {
     this.ctx.font = '1px Arial';
     this.ctx.fillStyle = 'white';
     this.ctx.fillText('GAME OVER', 1.8, 4);
+  }
+
+  private addOutlinesToBoard(board: number[][]) {
+    const columns = board[0]?.length ?? 0;
+    const rows = board.length;
+    for (let i = 0; i < columns; i++) {
+      this.ctx.fillStyle = '#511159';
+      this.ctx.fillRect(i, 0, 0.025, this.ctx.canvas.height);
+    }
+    for (let i = 0; i < rows; i++) {
+      this.ctx.fillStyle = '#511159';
+      this.ctx.fillRect(0, i, this.ctx.canvas.width, 0.025);
+    }
   }
 
   static forCanvas(

@@ -70,6 +70,6 @@ describe('GameRenderer', () => {
     renderer.fillBlocksInBoard(board);
 
     // Then
-    expect(ctx.fillRect).toHaveBeenCalledTimes(6);
+    expect(ctx.fillRect).toHaveBeenCalledTimes(15);
   });
 });
