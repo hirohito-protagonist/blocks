@@ -15,17 +15,6 @@ export const freeze = (p: Piece, board: number[][]): number[][] => {
   return g;
 };
 
-export const addOutlines = (ctx: CanvasRenderingContext2D) => {
-  for (let i = 0; i < COLUMNS; i++) {
-    ctx.fillStyle = '#511159';
-    ctx.fillRect(i, 0, 0.025, ctx.canvas.height);
-  }
-  for (let i = 0; i < ROWS; i++) {
-    ctx.fillStyle = '#511159';
-    ctx.fillRect(0, i, ctx.canvas.width, 0.025);
-  }
-};
-
 export const clearLines = (board: number[][]): { board: number[][]; clearedLines: number; } => {
 
   let lines = 0;

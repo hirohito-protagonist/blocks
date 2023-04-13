@@ -6,11 +6,11 @@ import {
   GameInformationType,
   rotate,
 } from '../../common';
-import { LEVEL } from './config';
+import { BLOCK_SIZE, LEVEL, COLUMNS, ROWS } from './config';
 import { Piece, pieceRender } from '../game-piece';
 import { freeze, clearLines, createEmptyBoard } from './util';
-import { drawBoard, gameOver } from './render';
 import { getLinesClearedPoints, POINTS } from './points';
+import { GameRenderer } from '../game-renderer';
 
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;
@@ -35,6 +35,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   const lKey = useKeyboard('l');
 
   const canvasCntext = useRef<HTMLCanvasElement>(null);
+  const renderer = useRef<GameRenderer>(null);
 
   const getContext = (): CanvasRenderingContext2D => {
     const canvas: HTMLCanvasElement = canvasCntext.current as HTMLCanvasElement;
@@ -97,13 +98,22 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     resetState();
     setGameStarted(false);
-    drawBoard(ctx, grid.current);
-    gameOver(ctx);
+    renderer.current.drawBoard(grid.current);
+    renderer.current.gameOver();
   };
 
   useEffect(() => {
-    const ctx = getContext();
-    drawBoard(ctx, grid.current);
+    if (canvasCntext.current !== null && renderer.current === null) {
+      renderer.current = GameRenderer.forCanvas(getContext(), {
+        width: COLUMNS * BLOCK_SIZE,
+        height: ROWS * BLOCK_SIZE,
+        blockSize: BLOCK_SIZE,
+      });
+    }
+  }, [canvasCntext.current, renderer.current]);
+
+  useEffect(() => {
+    renderer.current.drawBoard(grid.current);
     piece.current = null;
   }, []);
 
@@ -111,7 +121,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
     () => {
       if (isGameStarted) {
         const ctx = getContext();
-        drawBoard(ctx, grid.current);
+        renderer.current.drawBoard(grid.current);
         if (piece.current !== null) {
           pieceRender(piece.current, ctx);
         }
@@ -128,7 +138,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
         time.current.start = now;
         if (!drop(piece)) {
           setGameStarted(false);
-          gameOver(ctx);
+          renderer.current.gameOver();
           grid.current = createEmptyBoard();
           time.current = {
             start: 0,
@@ -144,7 +154,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
     const ctx = getContext();
     const block = piece.current;
     if (escapeKey) {
-      gameOver(ctx);
+      renderer.current.gameOver();
       setGameStarted(false);
     } else if (block !== null) {
       let p = lKey
@@ -171,7 +181,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
         }
       }
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      drawBoard(ctx, grid.current);
+      renderer.current.drawBoard(grid.current);
       pieceRender(block, ctx);
     }
   }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
