@@ -8,7 +8,11 @@ export class GameRenderer {
   private constructor(
     private ctx: CanvasRenderingContext2D,
     private configuration: Configuration
-  ) {}
+  ) {
+    this.ctx.canvas.width = configuration.width;
+    this.ctx.canvas.height = configuration.height;
+    this.ctx.scale(configuration.blockSize, configuration.blockSize);
+  }
 
   fillBlocksInBoard(board: number[][]) {
     board.forEach((row: number[], y) => {
@@ -22,13 +26,11 @@ export class GameRenderer {
   }
 
   gameOver() {
-    if (this.ctx !== null) {
-      this.ctx.fillStyle = '#711673';
-      this.ctx.fillRect(1, 3, 8, 1.2);
-      this.ctx.font = '1px Arial';
-      this.ctx.fillStyle = 'white';
-      this.ctx.fillText('GAME OVER', 1.8, 4);
-    }
+    this.ctx.fillStyle = '#711673';
+    this.ctx.fillRect(1, 3, 8, 1.2);
+    this.ctx.font = '1px Arial';
+    this.ctx.fillStyle = 'white';
+    this.ctx.fillText('GAME OVER', 1.8, 4);
   }
 
   static forCanvas(
