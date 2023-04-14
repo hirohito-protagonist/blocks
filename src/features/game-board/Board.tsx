@@ -89,7 +89,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   };
 
   const handleReset = () => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    renderer.clear();
     resetState();
     setGameStarted(false);
     renderer.drawBoard(grid.current);
@@ -103,7 +103,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
 
   useGameLoop(() => {
     if (isGameStarted) {
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      renderer.clear();
       renderer.drawBoard(grid.current);
       if (piece.current !== null) {
         pieceRender(piece.current, ctx);
@@ -158,7 +158,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
           gameInformation.current.score += POINTS.SOFT_DROP;
         }
       }
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      renderer.clear();
       renderer.drawBoard(grid.current);
       pieceRender(block, ctx);
     }
