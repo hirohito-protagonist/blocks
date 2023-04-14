@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Board } from '../features/game-board';
+import { GameBoard } from '../features/game-board';
 import { GameInformation } from '../features/game-information';
 import { GameInformationType } from '../common';
 import './app.module.scss';
@@ -14,7 +14,7 @@ export const App = () => {
 
   return (
     <div className="app">
-      <Board onGameInformation={handleGameInformation} />
+      <GameBoard onGameInformation={handleGameInformation} />
       <GameInformation className="c-game-information" information={info} />
     </div>
   );

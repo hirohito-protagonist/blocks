@@ -1,4 +1,4 @@
-import { useEffect, FC, useRef, MutableRefObject, useState } from 'react';
+import { useEffect, useRef, MutableRefObject, useState } from 'react';
 import {
   isNotInCollision,
   useGameLoop,
@@ -6,7 +6,7 @@ import {
   GameInformationType,
   rotate,
 } from '../../common';
-import { BLOCK_SIZE, LEVEL, COLUMNS, ROWS } from './config';
+import { LEVEL } from './config';
 import { Piece, pieceRender } from '../game-piece';
 import { freeze, clearLines, createEmptyBoard } from './util';
 import { getLinesClearedPoints, POINTS } from './points';
@@ -14,9 +14,11 @@ import { GameRenderer } from '../game-renderer';
 
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;
+  renderer: GameRenderer;
+  ctx: CanvasRenderingContext2D;
 }
 
-export const Board: FC<BoardProps> = ({ onGameInformation }) => {
+export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
   const gameInformation = useRef<GameInformationType>({
@@ -34,20 +36,14 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   const dKey = useKeyboard('d');
   const lKey = useKeyboard('l');
 
-  const canvasCntext = useRef<HTMLCanvasElement>(null);
-  const renderer = useRef<GameRenderer>(null);
-
-  const getContext = (): CanvasRenderingContext2D => {
-    const canvas: HTMLCanvasElement = canvasCntext.current as HTMLCanvasElement;
-    return canvas.getContext('2d') as CanvasRenderingContext2D;
-  };
-
   const drop = (p: MutableRefObject<Piece>): boolean => {
     const newPiece = { ...p.current, y: p.current.y + 1 };
     if (isNotInCollision(newPiece, grid.current)) {
       p.current.move(newPiece);
     } else {
-      const { board, clearedLines } = clearLines(freeze(p.current, grid.current));
+      const { board, clearedLines } = clearLines(
+        freeze(p.current, grid.current)
+      );
       grid.current = board;
       if (clearedLines > 0) {
         const points = getLinesClearedPoints(
@@ -72,7 +68,7 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
       if (p.current.y === 0) {
         return false;
       }
-      p.current = new Piece(getContext());
+      p.current = new Piece(ctx);
     }
 
     return true;
@@ -85,7 +81,6 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   };
 
   const handlePlay = () => {
-    const ctx = getContext();
     piece.current = new Piece(ctx);
     time.current.start = performance.now();
     resetState();
@@ -94,78 +89,61 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
   };
 
   const handleReset = () => {
-    const ctx = getContext();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     resetState();
     setGameStarted(false);
-    renderer.current.drawBoard(grid.current);
-    renderer.current.gameOver();
+    renderer.drawBoard(grid.current);
+    renderer.gameOver();
   };
 
   useEffect(() => {
-    if (canvasCntext.current !== null && renderer.current === null) {
-      renderer.current = GameRenderer.forCanvas(getContext(), {
-        width: COLUMNS * BLOCK_SIZE,
-        height: ROWS * BLOCK_SIZE,
-        blockSize: BLOCK_SIZE,
-      });
-    }
-  }, [canvasCntext.current, renderer.current]);
-
-  useEffect(() => {
-    renderer.current.drawBoard(grid.current);
+    renderer.drawBoard(grid.current);
     piece.current = null;
   }, []);
 
+  useGameLoop(() => {
+    if (isGameStarted) {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      renderer.drawBoard(grid.current);
+      if (piece.current !== null) {
+        pieceRender(piece.current, ctx);
+      }
+    }
+  }, [isGameStarted]);
+
   useGameLoop(
-    () => {
+    (now) => {
       if (isGameStarted) {
-        const ctx = getContext();
-        renderer.current.drawBoard(grid.current);
-        if (piece.current !== null) {
-          pieceRender(piece.current, ctx);
+        time.current.elapsed = now - time.current.start;
+        if (time.current.elapsed > time.current.level) {
+          time.current.start = now;
+          if (!drop(piece)) {
+            setGameStarted(false);
+            renderer.gameOver();
+            grid.current = createEmptyBoard();
+            time.current = {
+              start: 0,
+              elapsed: 0,
+              level: LEVEL.timeForLevel(gameInformation.current.level),
+            };
+          }
         }
       }
     },
     [isGameStarted]
   );
 
-  useGameLoop((now) => {
-    if (isGameStarted) {
-      const ctx = getContext();
-      time.current.elapsed = now - time.current.start;
-      if (time.current.elapsed > time.current.level) {
-        time.current.start = now;
-        if (!drop(piece)) {
-          setGameStarted(false);
-          renderer.current.gameOver();
-          grid.current = createEmptyBoard();
-          time.current = {
-            start: 0,
-            elapsed: 0,
-            level: LEVEL.timeForLevel(gameInformation.current.level),
-          };
-        }
-      }
-    }
-  }, [isGameStarted]);
-
   useEffect(() => {
-    const ctx = getContext();
     const block = piece.current;
     if (escapeKey) {
-      renderer.current.gameOver();
+      renderer.gameOver();
       setGameStarted(false);
     } else if (block !== null) {
       let p = lKey
         ? rotate(block)
         : {
             ...block,
-            x: aKey
-              ? block.x - 1
-              : dKey
-              ? block.x + 1
-              : block.x,
+            x: aKey ? block.x - 1 : dKey ? block.x + 1 : block.x,
             y: sKey || wKey ? block.y + 1 : block.y,
           };
       if (wKey) {
@@ -181,14 +159,13 @@ export const Board: FC<BoardProps> = ({ onGameInformation }) => {
         }
       }
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      renderer.current.drawBoard(grid.current);
+      renderer.drawBoard(grid.current);
       pieceRender(block, ctx);
     }
   }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
   return (
     <>
-      <canvas ref={canvasCntext} className="c-game-board"></canvas>
       {isGameStarted ? (
         <button onClick={handleReset} onKeyDown={(e) => e.preventDefault()}>
           Reset
