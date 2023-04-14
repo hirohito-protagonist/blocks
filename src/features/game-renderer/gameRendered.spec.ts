@@ -12,6 +12,7 @@ describe('GameRenderer', () => {
       font: '',
       fillText: jest.fn(),
       scale: jest.fn(),
+      clearRect: jest.fn(),
     } as Partial<CanvasRenderingContext2D>;
   };
 
@@ -71,5 +72,29 @@ describe('GameRenderer', () => {
 
     // Then
     expect(ctx.fillRect).toHaveBeenCalledTimes(15);
+  });
+
+  it('should clear board', () => {
+    // Given
+    const ctx = createRenderContext();
+    const board = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 1, 1, 0],
+      [1, 1, 1, 1],
+    ];
+    const renderer = GameRenderer.forCanvas(ctx as CanvasRenderingContext2D, {
+      width: 200,
+      height: 100,
+      blockSize: 10,
+    });
+
+    // When
+    renderer.clear();
+
+    // Then
+    expect(ctx.clearRect).toHaveBeenCalledTimes(1);
+    expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, 200, 100);
   });
 });

@@ -14,6 +14,10 @@ export class GameRenderer {
     this.ctx.scale(configuration.blockSize, configuration.blockSize);
   }
 
+  clear() {
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+  }
+
   drawBoard(board: number[][]) {
     this.fillBlocksInBoard(board);
     this.addOutlinesToBoard(board);
