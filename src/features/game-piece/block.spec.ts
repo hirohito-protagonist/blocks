@@ -64,4 +64,19 @@ describe('BlockRecord', () => {
             [0, 1, 0]
         ]);
     });
+
+    it('should move down', () => {
+        const block = new BlockRecord(3, 0, '#A62991', []);
+        const moved = block.moveDown();
+
+        expect(block.x).toEqual(3);
+        expect(block.y).toEqual(0);
+        expect(block.color).toEqual('#A62991');
+        expect(block.shape).toEqual([]);
+
+        expect(moved.x).toEqual(3); 
+        expect(moved.y).toEqual(1);
+        expect(moved.color).toEqual('#A62991');
+        expect(moved.shape).toEqual([]);
+    });
 });

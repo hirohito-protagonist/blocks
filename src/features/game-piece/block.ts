@@ -17,6 +17,10 @@ export class BlockRecord {
         return new BlockRecord(this.x, this.x, this.color, shape.map(row => row.reverse()));
     }
 
+    moveDown(): BlockRecord {
+        return new BlockRecord(this.x, this.y + 1, this.color, this.copyArray(this.shape));
+    }
+
     private copyArray(arr: number[][]): number[][] {
         return arr.map(v => v.map(d => d));
     }
