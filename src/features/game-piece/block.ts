@@ -45,6 +45,15 @@ export class BlockRecord {
     );
   }
 
+  moveRight(): BlockRecord {
+    return new BlockRecord(
+      this.x + 1,
+      this.y,
+      this.color,
+      this.copyArray(this.shape)
+    );
+  }
+
   private copyArray(arr: number[][]): number[][] {
     return arr.map((v) => v.map((d) => d));
   }
