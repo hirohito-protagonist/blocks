@@ -23,6 +23,19 @@ export class GameRenderer {
     this.addOutlinesToBoard(board);
   }
 
+  drawBlock(block: { shape: number[][]; color: string; x: number; y: number }) {
+    block.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value > 0) {
+          this.ctx.fillStyle = block.color;
+          const currentX = block.x + x;
+          const currentY = block.y + y;
+          this.ctx.fillRect(currentX, currentY, 1, 1);
+        }
+      });
+    });
+  }
+
   gameOver() {
     this.ctx.fillStyle = '#711673';
     this.ctx.fillRect(1, 3, 8, 1.2);

@@ -77,13 +77,6 @@ describe('GameRenderer', () => {
   it('should clear board', () => {
     // Given
     const ctx = createRenderContext();
-    const board = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 1, 1, 0],
-      [1, 1, 1, 1],
-    ];
     const renderer = GameRenderer.forCanvas(ctx as CanvasRenderingContext2D, {
       width: 200,
       height: 100,
@@ -96,5 +89,30 @@ describe('GameRenderer', () => {
     // Then
     expect(ctx.clearRect).toHaveBeenCalledTimes(1);
     expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, 200, 100);
+  });
+
+  it('should render block', () => {
+    // Given
+    const ctx = createRenderContext();
+    const shape = [
+      [0, 1, 0],
+      [1, 1, 1],
+      [0, 0, 0],
+    ];
+    const renderer = GameRenderer.forCanvas(ctx as CanvasRenderingContext2D, {
+      width: 200,
+      height: 100,
+      blockSize: 10,
+    });
+
+    // When
+    renderer.drawBlock({ color: '', x: 10, y: 20, shape });
+
+    // Then
+    expect(ctx.fillRect).toHaveBeenCalledTimes(4);
+    expect(ctx.fillRect).toHaveBeenNthCalledWith(1, 11, 20, 1, 1);
+    expect(ctx.fillRect).toHaveBeenNthCalledWith(2, 10, 21, 1, 1);
+    expect(ctx.fillRect).toHaveBeenNthCalledWith(3, 11, 21, 1, 1);
+    expect(ctx.fillRect).toHaveBeenNthCalledWith(4, 12, 21, 1, 1);
   });
 });
