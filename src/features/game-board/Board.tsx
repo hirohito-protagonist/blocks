@@ -1,6 +1,5 @@
 import { useEffect, useRef, MutableRefObject, useState } from 'react';
 import {
-  isNotInCollision,
   useGameLoop,
   useKeyboard,
   GameInformationType,
@@ -38,7 +37,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
 
   const drop = (p: MutableRefObject<Piece>): boolean => {
     const newPiece = { ...p.current, y: p.current.y + 1 };
-    if (isNotInCollision(newPiece, board.current.getBoard())) {
+    if (board.current.isNotInCollision(newPiece)) {
       p.current.move(newPiece);
     } else {
       board.current.freeze(p.current);
@@ -145,12 +144,12 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
             y: sKey || wKey ? block.y + 1 : block.y,
           };
       if (wKey) {
-        while (isNotInCollision(p, board.current.getBoard())) {
+        while (board.current.isNotInCollision(p)) {
           gameInformation.current.score += POINTS.HARD_DROP;
           block.move(p);
           p = { ...block, y: block.y + 1 };
         }
-      } else if (isNotInCollision(p, board.current.getBoard())) {
+      } else if (board.current.isNotInCollision(p)) {
         block.move(p);
         if (sKey) {
           gameInformation.current.score += POINTS.SOFT_DROP;
