@@ -30,16 +30,3 @@ export class Piece implements PieceType {
     return Math.floor(Math.random() * noOfTypes + 1);
   }
 }
-
-export const pieceRender = (p: Piece, ctx: CanvasRenderingContext2D) => {
-  p.shape.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value > 0) {
-        ctx.fillStyle = p.color;
-        const currentX = p.x + x;
-        const currentY = p.y + y;
-        ctx.fillRect(currentX, currentY, 1, 1);
-      }
-    });
-  });
-};
