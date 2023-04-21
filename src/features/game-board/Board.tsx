@@ -135,7 +135,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
     if (escapeKey) {
       renderer.gameOver();
       setGameStarted(false);
-    } else if (block !== null) {
+    } else if (block !== null && isGameStarted) {
       let p = lKey
         ? rotate(block)
         : {
@@ -159,7 +159,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
       renderer.drawBoard(board.current.getBoard());
       renderer.drawBlock(block);
     }
-  }, [escapeKey, aKey, wKey, sKey, dKey, lKey]);
+  }, [isGameStarted, escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
   return (
     <>
