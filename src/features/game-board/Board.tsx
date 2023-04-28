@@ -6,7 +6,7 @@ import {
   rotate,
 } from '../../common';
 import { LEVEL, COLUMNS, ROWS } from './config';
-import { Piece } from '../game-piece';
+import { Piece, BlockRecord } from '../game-piece';
 import { getLinesClearedPoints, POINTS } from './points';
 import { GameRenderer } from '../game-renderer';
 import { BoardManager } from './BoardManager';
@@ -27,7 +27,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   });
   const board = useRef(BoardManager.createEmpty(COLUMNS, ROWS));
   const time = useRef({ start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) });
-  const piece = useRef<Piece>(null);
+  const blockRecord = useRef(BlockRecord.withRandomShape())
   const escapeKey = useKeyboard('Escape');
   const aKey = useKeyboard('a');
   const wKey = useKeyboard('w');
@@ -35,10 +35,10 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   const dKey = useKeyboard('d');
   const lKey = useKeyboard('l');
 
-  const drop = (p: MutableRefObject<Piece>): boolean => {
-    const newPiece = { ...p.current, y: p.current.y + 1 };
+  const drop = (p: MutableRefObject<BlockRecord>): boolean => {
+    const newPiece = p.current.moveDown();
     if (board.current.isNotInCollision(newPiece)) {
-      p.current.move(newPiece);
+      p.current = newPiece;
     } else {
       board.current.freeze(p.current);
       const clearedLines = board.current.clearLines();
@@ -65,7 +65,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
       if (p.current.y === 0) {
         return false;
       }
-      p.current = new Piece(ctx);
+      p.current = BlockRecord.withRandomShape();
     }
 
     return true;
@@ -78,7 +78,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   };
 
   const handlePlay = () => {
-    piece.current = new Piece(ctx);
+    blockRecord.current = BlockRecord.withRandomShape();
     time.current.start = performance.now();
     resetState();
     setGameStarted(true);
@@ -95,16 +95,14 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
 
   useEffect(() => {
     renderer.drawBoard(board.current.getBoard());
-    piece.current = null;
+    blockRecord.current = BlockRecord.withRandomShape();
   }, []);
 
   useGameLoop(() => {
     if (isGameStarted) {
       renderer.clear();
       renderer.drawBoard(board.current.getBoard());
-      if (piece.current !== null) {
-        renderer.drawBlock(piece.current);
-      }
+      renderer.drawBlock(blockRecord.current);
     }
   }, [isGameStarted]);
 
@@ -114,7 +112,7 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
         time.current.elapsed = now - time.current.start;
         if (time.current.elapsed > time.current.level) {
           time.current.start = now;
-          if (!drop(piece)) {
+          if (!drop(blockRecord)) {
             setGameStarted(false);
             renderer.gameOver();
             board.current.clear();
@@ -131,33 +129,36 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
   );
 
   useEffect(() => {
-    const block = piece.current;
+    const currentBlock = blockRecord.current;
     if (escapeKey) {
       renderer.gameOver();
       setGameStarted(false);
-    } else if (block !== null && isGameStarted) {
-      let p = lKey
-        ? rotate(block)
-        : {
-            ...block,
-            x: aKey ? block.x - 1 : dKey ? block.x + 1 : block.x,
-            y: sKey || wKey ? block.y + 1 : block.y,
-          };
+    } else if (isGameStarted) {
+      let newBlock = currentBlock;
+      if (lKey) {
+        newBlock = currentBlock.rotate();
+      } else if (aKey) {
+        newBlock = currentBlock.moveLeft();
+      } else if (dKey) {
+        newBlock = currentBlock.moveRight();
+      } else if (sKey || wKey) {
+        newBlock = currentBlock.moveDown();
+      }
       if (wKey) {
-        while (board.current.isNotInCollision(p)) {
+        while (board.current.isNotInCollision(newBlock)) {
           gameInformation.current.score += POINTS.HARD_DROP;
-          block.move(p);
-          p = { ...block, y: block.y + 1 };
+          blockRecord.current = newBlock;
+          newBlock = newBlock.moveDown();
         }
-      } else if (board.current.isNotInCollision(p)) {
-        block.move(p);
+      } else if (board.current.isNotInCollision(newBlock)) {
+        blockRecord.current = newBlock;
         if (sKey) {
           gameInformation.current.score += POINTS.SOFT_DROP;
         }
       }
       renderer.clear();
       renderer.drawBoard(board.current.getBoard());
-      renderer.drawBlock(block);
+      renderer.drawBlock(currentBlock);
     }
   }, [isGameStarted, escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
