@@ -98,14 +98,6 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
     blockRecord.current = BlockRecord.withRandomShape();
   }, []);
 
-  useGameLoop(() => {
-    if (isGameStarted) {
-      renderer.clear();
-      renderer.drawBoard(board.current.getBoard());
-      renderer.drawBlock(blockRecord.current);
-    }
-  }, [isGameStarted]);
-
   useGameLoop(
     (now) => {
       if (isGameStarted) {
@@ -156,12 +148,17 @@ export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
           gameInformation.current.score += POINTS.SOFT_DROP;
         }
       }
-      renderer.clear();
-      renderer.drawBoard(board.current.getBoard());
-      renderer.drawBlock(currentBlock);
     }
   }, [isGameStarted, escapeKey, aKey, wKey, sKey, dKey, lKey]);
 
+  useGameLoop(() => {
+    if (isGameStarted) {
+      renderer.clear();
+      renderer.drawBoard(board.current.getBoard());
+      renderer.drawBlock(blockRecord.current);
+    }
+  }, [isGameStarted]);
+  
   return (
     <>
       {isGameStarted ? (
