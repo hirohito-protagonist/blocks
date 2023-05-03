@@ -6,7 +6,7 @@ import {
   rotate,
 } from '../../common';
 import { LEVEL, COLUMNS, ROWS } from './config';
-import { Piece, BlockRecord } from '../game-piece';
+import { BlockRecord } from '../game-piece';
 import { getLinesClearedPoints, POINTS } from './points';
 import { GameRenderer } from '../game-renderer';
 import { BoardManager } from './BoardManager';
