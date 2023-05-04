@@ -36,8 +36,29 @@ describe('GameInformation', () => {
       expect(result).toEqual({
         score: expectedPoints,
         level: 0,
-        lines: 0,
+        lines: clearedLines,
       });
     }
   );
+
+  it('should increase level each time the five lines are cleared', () => {
+    // Given
+    const gameInformation = GameInformation.create();
+
+    // When
+    for (let i = 0; i < 6; i++) {
+      gameInformation.calculate(1);
+    }
+    for (let i = 0; i < 6; i++) {
+      gameInformation.calculate(1);
+    }
+    const result = gameInformation.current();
+
+    // Then
+    expect(result).toEqual({
+      score: 300,
+      level: 2,
+      lines: 1,
+    });
+  });
 });
