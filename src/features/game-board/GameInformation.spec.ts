@@ -61,4 +61,21 @@ describe('GameInformation', () => {
       lines: 1,
     });
   });
+
+  it('should add points', () => {
+    // Given
+    const gameInformation = GameInformation.create();
+
+    // When
+    gameInformation.addScore(10);
+    gameInformation.addScore(20);
+    const result = gameInformation.current();
+
+    // Then
+    expect(result).toEqual({
+      score: 30,
+      level: 0,
+      lines: 0,
+    });
+  });
 });
