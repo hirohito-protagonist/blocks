@@ -1,6 +1,13 @@
 import { GameInformation } from './GameInformation';
 
 describe('GameInformation', () => {
+
+  const levelUp = (gameInformation: GameInformation) => {
+    for (let i = 0; i < 6; i++) {
+      gameInformation.calculate(1);
+    }
+  }
+
   it('should create', () => {
     // Given
     const gameInformation = GameInformation.create();
@@ -46,12 +53,8 @@ describe('GameInformation', () => {
     const gameInformation = GameInformation.create();
 
     // When
-    for (let i = 0; i < 6; i++) {
-      gameInformation.calculate(1);
-    }
-    for (let i = 0; i < 6; i++) {
-      gameInformation.calculate(1);
-    }
+    levelUp(gameInformation);
+    levelUp(gameInformation);
     const result = gameInformation.current();
 
     // Then
