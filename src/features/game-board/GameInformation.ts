@@ -25,9 +25,15 @@ export class GameInformation {
     }
     this.lines = clearedLines;
   }
-  
+
   addScore(points: number) {
     this.score += points;
+  }
+
+  clear() {
+    this.score = 0;
+    this.level = 0;
+    this.lines = 0;
   }
 
   static create(): GameInformation {

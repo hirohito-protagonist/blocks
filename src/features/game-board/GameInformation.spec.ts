@@ -81,4 +81,22 @@ describe('GameInformation', () => {
       lines: 0,
     });
   });
+
+  it('should clear state', () => {
+    // Given
+    const gameInformation = GameInformation.create();
+
+    // When
+    gameInformation.addScore(10);
+    gameInformation.addScore(20);
+    gameInformation.clear();
+    const result = gameInformation.current();
+
+    // Then
+    expect(result).toEqual({
+      score: 0,
+      level: 0,
+      lines: 0,
+    });
+  });
 });
