@@ -14,10 +14,9 @@ import { BoardManager } from './BoardManager';
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;
   renderer: GameRenderer;
-  ctx: CanvasRenderingContext2D;
 }
 
-export const Board = ({ renderer, ctx, onGameInformation }: BoardProps) => {
+export const Board = ({ renderer, onGameInformation }: BoardProps) => {
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
   const gameInformation = useRef<GameInformationType>({

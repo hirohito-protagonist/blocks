@@ -13,10 +13,9 @@ export const GameBoard = ({ onGameInformation }: GameBoardProps) => {
       width={COLUMNS * BLOCK_SIZE}
       height={ROWS * BLOCK_SIZE}
       blockSize={BLOCK_SIZE}
-      initialized={(renderer, ctx) => {
+      initialized={(renderer) => {
         return (
           <Board
-            ctx={ctx}
             renderer={renderer}
             onGameInformation={onGameInformation}
           />
