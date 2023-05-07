@@ -59,9 +59,9 @@ describe('GameInformation', () => {
 
     // Then
     expect(result).toEqual({
-      score: 300,
+      score: 2100,
       level: 2,
-      lines: 1,
+      lines: 12,
     });
   });
 

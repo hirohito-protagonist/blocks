@@ -17,13 +17,13 @@ export class GameInformation {
   }
 
   calculate(clearedLines: number): void {
-    this.score = getLinesClearedPoints(clearedLines, this.level);
+    this.score += getLinesClearedPoints(clearedLines, this.level);
     this.lineCounter += clearedLines;
     if (this.lineCounter >= 5) {
       this.level = this.level < 10 ? this.level + 1 : this.level;
       this.lineCounter -= 5;
     }
-    this.lines = clearedLines;
+    this.lines += clearedLines;
   }
 
   addScore(points: number) {
