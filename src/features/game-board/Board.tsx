@@ -3,13 +3,13 @@ import {
   useGameLoop,
   useKeyboard,
   GameInformationType,
-  rotate,
 } from '../../common';
 import { LEVEL, COLUMNS, ROWS } from './config';
 import { BlockRecord } from '../game-piece';
 import { getLinesClearedPoints, POINTS } from './points';
 import { GameRenderer } from '../game-renderer';
 import { BoardManager } from './BoardManager';
+import { GameInformation } from './GameInformation';
 
 interface BoardProps {
   onGameInformation: (information: GameInformationType) => void;
@@ -19,11 +19,7 @@ interface BoardProps {
 export const Board = ({ renderer, onGameInformation }: BoardProps) => {
   const [isGameStarted, setGameStarted] = useState<boolean>(false);
   const counters = useRef({ lines: 0 });
-  const gameInformation = useRef<GameInformationType>({
-    score: 0,
-    level: 0,
-    lines: 0,
-  });
+  const gameInformation = useRef<GameInformation>(GameInformation.create());
   const board = useRef(BoardManager.createEmpty(COLUMNS, ROWS));
   const time = useRef({ start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) });
   const blockRecord = useRef(BlockRecord.withRandomShape())
@@ -42,25 +38,18 @@ export const Board = ({ renderer, onGameInformation }: BoardProps) => {
       board.current.freeze(p.current);
       const clearedLines = board.current.clearLines();
       if (clearedLines > 0) {
+        const { level } = gameInformation.current.current();
         const points = getLinesClearedPoints(
           clearedLines,
-          gameInformation.current.level
+          level,
         );
+        gameInformation.current.calculate(clearedLines);
         counters.current.lines += clearedLines;
-        if (counters.current.lines >= 5) {
-          const lvl =
-            gameInformation.current.level < 10
-              ? gameInformation.current.level + 1
-              : gameInformation.current.level;
-          counters.current.lines -= 5;
-          time.current.level = LEVEL.timeForLevel(lvl);
-          gameInformation.current.level = lvl;
-        }
-        gameInformation.current.lines += clearedLines;
-        gameInformation.current.score += points;
       }
 
-      onGameInformation({ ...gameInformation.current });
+      const gameInfo = gameInformation.current.current();
+      time.current.level = LEVEL.timeForLevel(gameInfo.level);
+      onGameInformation(gameInfo);
       if (p.current.y === 0) {
         return false;
       }
@@ -73,7 +62,7 @@ export const Board = ({ renderer, onGameInformation }: BoardProps) => {
   const resetState = () => {
     board.current.clear();
     time.current = { start: 0, elapsed: 0, level: LEVEL.timeForLevel(0) };
-    gameInformation.current = { level: 0, score: 0, lines: 0 };
+    gameInformation.current.clear();
   };
 
   const handlePlay = () => {
@@ -81,7 +70,7 @@ export const Board = ({ renderer, onGameInformation }: BoardProps) => {
     time.current.start = performance.now();
     resetState();
     setGameStarted(true);
-    onGameInformation({ ...gameInformation.current });
+    onGameInformation(gameInformation.current.current());
   };
 
   const handleReset = () => {
@@ -104,13 +93,15 @@ export const Board = ({ renderer, onGameInformation }: BoardProps) => {
         if (time.current.elapsed > time.current.level) {
           time.current.start = now;
           if (!drop(blockRecord)) {
+            const { level } = gameInformation.current.current();
             setGameStarted(false);
             renderer.gameOver();
             board.current.clear();
+
             time.current = {
               start: 0,
               elapsed: 0,
-              level: LEVEL.timeForLevel(gameInformation.current.level),
+              level: LEVEL.timeForLevel(level),
             };
           }
         }
@@ -137,14 +128,14 @@ export const Board = ({ renderer, onGameInformation }: BoardProps) => {
       }
       if (wKey) {
         while (board.current.isNotInCollision(newBlock)) {
-          gameInformation.current.score += POINTS.HARD_DROP;
+          gameInformation.current.addScore(POINTS.HARD_DROP);
           blockRecord.current = newBlock;
           newBlock = newBlock.moveDown();
         }
       } else if (board.current.isNotInCollision(newBlock)) {
         blockRecord.current = newBlock;
         if (sKey) {
-          gameInformation.current.score += POINTS.SOFT_DROP;
+          gameInformation.current.addScore(POINTS.SOFT_DROP);
         }
       }
     }
